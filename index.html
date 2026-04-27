@@ -524,29 +524,55 @@ function buildWinnersBracket() {
   container.appendChild(makeRoundCol("Round 2", ["G5", "G6"]));
   container.appendChild(makeRoundCol("Winners Final", ["G11"]));
 
-  // Championship + if necessary
-  // G14 at 50% (aligns with G11), G15 at ~87.5% (aligns with G4/bottom area)
-  // Spacer ratios 4:3:1 achieve this alignment
+  // Championship column — G14 and G15 positioned after render
+  // to align with Round 1 game cards using JS measurement
   const champRoundCol = document.createElement("div");
   champRoundCol.className = "round-col";
+  champRoundCol.id = "champ-round-col";
   champRoundCol.innerHTML = `<div class="round-header">Championship</div>`;
-  const champSlots = document.createElement("div");
-  champSlots.style.cssText = "display:flex;flex-direction:column;flex:1;padding:12px 10px;gap:0;";
-  const topSpacer = document.createElement("div");
-  topSpacer.style.cssText = "flex:4;";
-  const g14card = makeGameCard("G14");
-  const midSpacer = document.createElement("div");
-  midSpacer.style.cssText = "flex:3;";
-  const g15card = makeGameCard("G15");
-  const botSpacer = document.createElement("div");
-  botSpacer.style.cssText = "flex:1;";
-  champSlots.appendChild(topSpacer);
-  champSlots.appendChild(g14card);
-  champSlots.appendChild(midSpacer);
-  champSlots.appendChild(g15card);
-  champSlots.appendChild(botSpacer);
-  champRoundCol.appendChild(champSlots);
+  const champBody = document.createElement("div");
+  champBody.style.cssText = "position:relative;flex:1;";
+  champBody.id = "champ-body";
+  const g14wrap = document.createElement("div");
+  g14wrap.style.cssText = "position:absolute;left:10px;right:10px;";
+  g14wrap.id = "g14-wrap";
+  g14wrap.appendChild(makeGameCard("G14"));
+  const g15wrap = document.createElement("div");
+  g15wrap.style.cssText = "position:absolute;left:10px;right:10px;";
+  g15wrap.id = "g15-wrap";
+  g15wrap.appendChild(makeGameCard("G15"));
+  champBody.appendChild(g14wrap);
+  champBody.appendChild(g15wrap);
+  champRoundCol.appendChild(champBody);
   container.appendChild(champRoundCol);
+
+  // After render: position G14 to align with G11, G15 to align with G4
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const body = document.getElementById("champ-body");
+      const g14w = document.getElementById("g14-wrap");
+      const g15w = document.getElementById("g15-wrap");
+      const bodyTop = body.getBoundingClientRect().top;
+      const bodyH   = body.getBoundingClientRect().height;
+
+      // Round 1 is col 1, Round 2 is col 2, Winners Final is col 3
+      // G11 is the only card in col 3's round-slots
+      // G4 is the 4th card in col 1's round-slots
+      const g11card = document.querySelector("#winners-bracket .round-col:nth-child(3) .round-slots .game-card:nth-child(1)");
+      const g4card  = document.querySelector("#winners-bracket .round-col:nth-child(1) .round-slots .game-card:nth-child(4)");
+
+      if (g11card && body) {
+        const g11rect = g11card.getBoundingClientRect();
+        const top = g11rect.top - bodyTop;
+        g14w.style.top = Math.max(0, top) + "px";
+      }
+      if (g4card && body) {
+        const g4rect = g4card.getBoundingClientRect();
+        const top = g4rect.top - bodyTop;
+        g15w.style.top = Math.max(0, top) + "px";
+      }
+    });
+  });
 
   // Champion box
   const champCol = document.createElement("div");
