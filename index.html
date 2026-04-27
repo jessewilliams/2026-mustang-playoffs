@@ -520,17 +520,24 @@ function buildWinnersBracket() {
   const container = document.getElementById("winners-bracket");
   container.innerHTML = "";
 
-  // Round 1: G1 G2 G3 G4
   container.appendChild(makeRoundCol("Round 1", ["G1", "G2", "G3", "G4"]));
-  // Round 2: G5 G6
   container.appendChild(makeRoundCol("Round 2", ["G5", "G6"]));
-  // Winners final: G11
   container.appendChild(makeRoundCol("Winners Final", ["G11"]));
 
-  // Championship column
+  // Championship + if necessary
+  const champRoundCol = document.createElement("div");
+  champRoundCol.className = "round-col";
+  champRoundCol.innerHTML = `<div class="round-header">Championship</div>`;
+  const champSlots = document.createElement("div");
+  champSlots.className = "round-slots";
+  champSlots.appendChild(makeGameCard("G14"));
+  champSlots.appendChild(makeGameCard("G15"));
+  champRoundCol.appendChild(champSlots);
+  container.appendChild(champRoundCol);
+
+  // Champion box
   const champCol = document.createElement("div");
   champCol.className = "champ-col";
-
   const champGame = D.games["G14"];
   const champResult = champGame?.result;
   let champName = "TBD";
@@ -540,10 +547,9 @@ function buildWinnersBracket() {
       ? champResult.homeTeam : champResult.awayTeam;
     champClass = "";
   }
-
   champCol.innerHTML = `
     <div class="champ-box">
-      <div class="champ-box-label">🏆 Champion</div>
+      <div class="champ-box-label">&#127942; Champion</div>
       <div class="champ-box-name ${champClass}">${champName}</div>
     </div>`;
   container.appendChild(champCol);
@@ -553,24 +559,10 @@ function buildElimBracket() {
   const container = document.getElementById("elim-bracket");
   container.innerHTML = "";
 
-  // Elim R1: G7 G8
   container.appendChild(makeRoundCol("Elim Round 1", ["G7", "G8"]));
-  // Elim R2: G9 G10
   container.appendChild(makeRoundCol("Elim Round 2", ["G9", "G10"]));
-  // Elim semi: G12
   container.appendChild(makeRoundCol("Elim Semi", ["G12"]));
-  // Elim final: G13
   container.appendChild(makeRoundCol("Elim Final", ["G13"]));
-  // Championship + if necessary
-  const rightCol = document.createElement("div");
-  rightCol.className = "round-col";
-  rightCol.innerHTML = `<div class="round-header">Championship</div>`;
-  const slots = document.createElement("div");
-  slots.className = "round-slots";
-  slots.appendChild(makeGameCard("G14"));
-  slots.appendChild(makeGameCard("G15"));
-  rightCol.appendChild(slots);
-  container.appendChild(rightCol);
 }
 
 function buildBracket() {
