@@ -235,8 +235,9 @@ window.PLAYOFF_DATA = {
 
   restRules: [
     { maxPitches: 20, restDays: 0 },
-    { maxPitches: 40, restDays: 1 },
-    { maxPitches: 60, restDays: 2 },
-    { maxPitches: 85, restDays: 3 }
+    { maxPitches: 35, restDays: 1 },
+    { maxPitches: 50, restDays: 2 },
+    { maxPitches: 65, restDays: 3 },
+    { maxPitches: 999, restDays: 4 }
   ]
 };

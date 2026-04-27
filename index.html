@@ -16,7 +16,7 @@
 
   /* ── HEADER ── */
   header {
-    background: #1a1a2e;
+    background: #1a4a2e;
     color: #fff;
     padding: 18px 32px;
     display: flex;
@@ -24,7 +24,7 @@
     gap: 16px;
   }
   header h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.02em; }
-  header span { font-size: 13px; color: #aab; }
+  header span { font-size: 13px; color: #a8c8b0; }
 
   /* ── LAYOUT ── */
   main { padding: 28px 24px; max-width: 1300px; margin: 0 auto; }
@@ -147,6 +147,7 @@
     text-overflow: ellipsis;
   }
   .team-name.tbd { color: #bbb; font-style: italic; font-weight: 400; }
+  .team-name.pending { color: #999; font-style: italic; font-weight: 400; font-size: 10px; }
   .team-row.winner .team-name { font-weight: 700; color: #1a1a1a; }
   .team-row.loser  .team-name { color: #aaa; }
 
@@ -192,7 +193,7 @@
     border-left: 1px solid #e0e0e0;
   }
   .champ-box {
-    border: 2px solid #1a1a2e;
+    border: 2px solid #1a4a2e;
     border-radius: 8px;
     padding: 14px 18px;
     text-align: center;
@@ -200,7 +201,7 @@
     min-width: 140px;
   }
   .champ-box-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 6px; }
-  .champ-box-name  { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+  .champ-box-name  { font-size: 15px; font-weight: 700; color: #1a4a2e; }
   .champ-box-name.tbd { color: #bbb; font-style: italic; font-weight: 400; }
 
   /* ── MODAL ── */
@@ -403,24 +404,32 @@ function teamName(seed) {
   return D.seedings[seed] || ("Seed " + seed);
 }
 
+function slotLabel(slot) {
+  if (!slot) return "TBD";
+  if (slot.seed) return null; // resolved via seedings, no label needed
+  if (slot.winnerOf) return `Winner of ${slot.winnerOf}`;
+  if (slot.loserOf)  return `Loser of ${slot.loserOf}`;
+  return "TBD";
+}
+
 function resolveSlot(slot) {
-  if (!slot) return { name: "TBD", seed: null };
-  if (slot.seed) return { name: teamName(slot.seed), seed: slot.seed };
+  if (!slot) return { name: "TBD", seed: null, pending: true, label: "TBD" };
+  if (slot.seed) return { name: teamName(slot.seed), seed: slot.seed, pending: false, label: null };
   if (slot.winnerOf) {
     const r = D.games[slot.winnerOf]?.result;
-    if (!r) return { name: "TBD", seed: null };
+    if (!r) return { name: null, seed: null, pending: true, label: `Winner of ${slot.winnerOf}` };
     const win = r.homeScore > r.awayScore ? "home" : "away";
     const s   = win === "home" ? r.homeSeed : r.awaySeed;
-    return { name: r[win + "Team"], seed: s };
+    return { name: r[win + "Team"], seed: s, pending: false, label: null };
   }
   if (slot.loserOf) {
     const r = D.games[slot.loserOf]?.result;
-    if (!r) return { name: "TBD", seed: null };
+    if (!r) return { name: null, seed: null, pending: true, label: `Loser of ${slot.loserOf}` };
     const lose = r.homeScore > r.awayScore ? "away" : "home";
     const s    = lose === "home" ? r.homeSeed : r.awaySeed;
-    return { name: r[lose + "Team"], seed: s };
+    return { name: r[lose + "Team"], seed: s, pending: false, label: null };
   }
-  return { name: "TBD", seed: null };
+  return { name: "TBD", seed: null, pending: true, label: "TBD" };
 }
 
 function pitchClass(n) {
@@ -466,8 +475,13 @@ function makeGameCard(gameId) {
   card.className = "game-card" + (r ? " has-result" : "");
   card.onclick = () => openModal(gameId);
 
-  const statusText = r ? "FINAL" : (home.name !== "TBD" && away.name !== "TBD" ? "UPCOMING" : "");
+  const statusText  = r ? "FINAL" : (!home.pending && !away.pending ? "UPCOMING" : "");
   const statusClass = r ? "final" : "";
+
+  const homeDisplay = home.pending ? (home.label || "TBD") : home.name;
+  const awayDisplay = away.pending ? (away.label || "TBD") : away.name;
+  const homeCls     = home.pending ? "pending" : "";
+  const awayCls     = away.pending ? "pending" : "";
 
   card.innerHTML = `
     <div class="game-card-header">
@@ -480,12 +494,12 @@ function makeGameCard(gameId) {
     </div>
     <div class="team-row ${homeWon ? "winner" : awayWon ? "loser" : ""}">
       <span class="team-seed">${home.seed ?? ""}</span>
-      <span class="team-name ${home.name === "TBD" ? "tbd" : ""}">${home.name}</span>
+      <span class="team-name ${homeCls}">${homeDisplay}</span>
       <span class="team-score">${r ? r.homeScore : ""}</span>
     </div>
     <div class="team-row ${awayWon ? "winner" : homeWon ? "loser" : ""}">
       <span class="team-seed">${away.seed ?? ""}</span>
-      <span class="team-name ${away.name === "TBD" ? "tbd" : ""}">${away.name}</span>
+      <span class="team-name ${awayCls}">${awayDisplay}</span>
       <span class="team-score">${r ? r.awayScore : ""}</span>
     </div>`;
   return card;
