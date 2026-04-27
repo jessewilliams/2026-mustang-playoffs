@@ -478,8 +478,8 @@ function makeGameCard(gameId) {
   const statusText  = r ? "FINAL" : (!home.pending && !away.pending ? "UPCOMING" : "");
   const statusClass = r ? "final" : "";
 
-  const homeDisplay = home.pending ? (home.label || "TBD") : home.name;
-  const awayDisplay = away.pending ? (away.label || "TBD") : away.name;
+  const homeDisplay = home.pending ? (home.label || "TBD") : (home.name || "TBD");
+  const awayDisplay = away.pending ? (away.label || "TBD") : (away.name || "TBD");
   const homeCls     = home.pending ? "pending" : "";
   const awayCls     = away.pending ? "pending" : "";
 
@@ -525,22 +525,26 @@ function buildWinnersBracket() {
   container.appendChild(makeRoundCol("Winners Final", ["G11"]));
 
   // Championship + if necessary
-  // G14 sits in the top half (aligned with G11), G15 below
+  // G14 aligns with G11 (middle of winners bracket), G15 sits below
   const champRoundCol = document.createElement("div");
   champRoundCol.className = "round-col";
   champRoundCol.innerHTML = `<div class="round-header">Championship</div>`;
   const champSlots = document.createElement("div");
   champSlots.style.cssText = "display:flex;flex-direction:column;flex:1;padding:12px 10px;gap:10px;";
-  // Top half: G14 centered in upper 50%
-  const topHalf = document.createElement("div");
-  topHalf.style.cssText = "flex:1;display:flex;flex-direction:column;justify-content:center;";
-  topHalf.appendChild(makeGameCard("G14"));
-  // Bottom half: G15 centered in lower 50%
-  const botHalf = document.createElement("div");
-  botHalf.style.cssText = "flex:1;display:flex;flex-direction:column;justify-content:center;";
-  botHalf.appendChild(makeGameCard("G15"));
-  champSlots.appendChild(topHalf);
-  champSlots.appendChild(botHalf);
+  // Spacer pushes G14 down to align with G11
+  const spacer = document.createElement("div");
+  spacer.style.cssText = "flex:1;";
+  // G14 in the middle
+  const g14card = makeGameCard("G14");
+  // Small gap then G15
+  const g15card = makeGameCard("G15");
+  // Bottom spacer to balance
+  const spacer2 = document.createElement("div");
+  spacer2.style.cssText = "flex:1;";
+  champSlots.appendChild(spacer);
+  champSlots.appendChild(g14card);
+  champSlots.appendChild(g15card);
+  champSlots.appendChild(spacer2);
   champRoundCol.appendChild(champSlots);
   container.appendChild(champRoundCol);
 
@@ -587,8 +591,10 @@ function openModal(gameId) {
   const away = resolveSlot(g.awaySlot);
   const r = g.result;
 
+  const homeLabel = home.pending ? (home.label || "TBD") : (home.name || "TBD");
+  const awayLabel = away.pending ? (away.label || "TBD") : (away.name || "TBD");
   document.getElementById("modal-title").textContent =
-    `${gameId}: ${home.name} vs. ${away.name}`;
+    `${gameId}: ${homeLabel} vs. ${awayLabel}`;
   document.getElementById("modal-meta").textContent =
     `${g.date} · ${g.time} · ${g.location}${g.ifNecessary ? " · If Necessary" : ""}`;
 
