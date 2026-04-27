@@ -525,26 +525,26 @@ function buildWinnersBracket() {
   container.appendChild(makeRoundCol("Winners Final", ["G11"]));
 
   // Championship + if necessary
-  // G14 aligns with G11 (middle of winners bracket), G15 sits below
+  // G14 at 50% (aligns with G11), G15 at ~87.5% (aligns with G4/bottom area)
+  // Spacer ratios 4:3:1 achieve this alignment
   const champRoundCol = document.createElement("div");
   champRoundCol.className = "round-col";
   champRoundCol.innerHTML = `<div class="round-header">Championship</div>`;
   const champSlots = document.createElement("div");
-  champSlots.style.cssText = "display:flex;flex-direction:column;flex:1;padding:12px 10px;gap:10px;";
-  // Spacer pushes G14 down to align with G11
-  const spacer = document.createElement("div");
-  spacer.style.cssText = "flex:1;";
-  // G14 in the middle
+  champSlots.style.cssText = "display:flex;flex-direction:column;flex:1;padding:12px 10px;gap:0;";
+  const topSpacer = document.createElement("div");
+  topSpacer.style.cssText = "flex:4;";
   const g14card = makeGameCard("G14");
-  // Small gap then G15
+  const midSpacer = document.createElement("div");
+  midSpacer.style.cssText = "flex:3;";
   const g15card = makeGameCard("G15");
-  // Bottom spacer to balance
-  const spacer2 = document.createElement("div");
-  spacer2.style.cssText = "flex:1;";
-  champSlots.appendChild(spacer);
+  const botSpacer = document.createElement("div");
+  botSpacer.style.cssText = "flex:1;";
+  champSlots.appendChild(topSpacer);
   champSlots.appendChild(g14card);
+  champSlots.appendChild(midSpacer);
   champSlots.appendChild(g15card);
-  champSlots.appendChild(spacer2);
+  champSlots.appendChild(botSpacer);
   champRoundCol.appendChild(champSlots);
   container.appendChild(champRoundCol);
 
