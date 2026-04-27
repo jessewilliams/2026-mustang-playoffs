@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · 2026 Mustang Playoffs</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #f5f5f5; color: #1a1a1a;
+  }
+  header {
+    background: #1a1a2e; color: #fff;
+    padding: 16px 28px;
+    display: flex; align-items: baseline; gap: 14px;
+  }
+  header h1 { font-size: 18px; font-weight: 700; }
+  header a  { font-size: 12px; color: #aab; text-decoration: none; }
+  header a:hover { color: #fff; }
+
+  main { max-width: 880px; margin: 0 auto; padding: 28px 20px; display: flex; flex-direction: column; gap: 24px; }
+
+  .card {
+    background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 22px 24px;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px;
+  }
+  .card-desc { font-size: 13px; color: #666; margin-bottom: 16px; line-height: 1.5; }
+
+  label.file-label {
+    display: inline-block; cursor: pointer;
+    background: #f0f0f0; border: 1px dashed #bbb; border-radius: 6px;
+    padding: 12px 20px; font-size: 13px; color: #555;
+    transition: background 0.15s;
+  }
+  label.file-label:hover { background: #e8e8e8; }
+  input[type="file"] { display: none; }
+
+  .btn {
+    display: inline-block; padding: 9px 20px; font-size: 13px; font-weight: 600;
+    border: none; border-radius: 6px; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-primary   { background: #1a1a2e; color: #fff; }
+  .btn-primary:hover { background: #2e2e50; }
+  .btn-secondary { background: #eee; color: #333; }
+  .btn-secondary:hover { background: #ddd; }
+  .btn-danger    { background: #fdecea; color: #a00; border: 1px solid #f5b0aa; }
+  .btn-danger:hover { background: #fad5d2; }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+
+  /* seedings table */
+  .seed-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  .seed-table th {
+    text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #888; padding: 6px 10px;
+    border-bottom: 1px solid #eee; background: #fafafa;
+  }
+  .seed-table td { padding: 7px 10px; border-bottom: 1px solid #f2f2f2; }
+  .seed-table input {
+    width: 100%; border: 1px solid #ddd; border-radius: 5px;
+    padding: 5px 8px; font-size: 13px; background: #fafafa;
+  }
+  .seed-table input:focus { outline: none; border-color: #888; background: #fff; }
+
+  /* affidavit parser */
+  textarea {
+    width: 100%; min-height: 140px; padding: 10px 12px;
+    font-size: 13px; font-family: inherit;
+    border: 1px solid #ddd; border-radius: 6px;
+    background: #fafafa; resize: vertical; line-height: 1.5;
+  }
+  textarea:focus { outline: none; border-color: #888; background: #fff; }
+
+  /* parsed result preview */
+  .preview-box {
+    background: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 6px;
+    padding: 16px 18px; margin-top: 14px; display: none;
+  }
+  .preview-box.show { display: block; }
+  .preview-title { font-size: 12px; font-weight: 700; color: #555; margin-bottom: 10px; }
+
+  .preview-score { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+  .preview-team { background: #eee; border-radius: 6px; padding: 7px 14px; font-size: 14px; font-weight: 600; }
+  .preview-team span { color: #1a3a8f; font-size: 20px; font-weight: 800; margin-left: 8px; }
+  .preview-at { color: #aaa; font-size: 13px; }
+
+  .innings-grid {
+    display: grid; grid-template-columns: auto repeat(6, 1fr) auto;
+    gap: 4px; font-size: 12px; margin-bottom: 14px;
+  }
+  .innings-grid .hdr { font-size: 10px; font-weight: 700; color: #888; text-align: center; padding: 3px; }
+  .innings-grid .inn-cell { text-align: center; }
+  .innings-grid input {
+    width: 100%; text-align: center; padding: 4px 2px;
+    border: 1px solid #ddd; border-radius: 4px; font-size: 12px;
+    background: #fff;
+  }
+  .innings-grid .team-name-cell { font-weight: 600; font-size: 12px; padding: 4px 6px; display: flex; align-items: center; }
+  .innings-grid .total-cell { font-weight: 700; font-size: 13px; text-align: center; display: flex; align-items: center; justify-content: center; color: #1a3a8f; min-width: 28px; }
+
+  /* pitcher rows */
+  .pitcher-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .pitcher-row {
+    display: grid; grid-template-columns: 120px 1fr 80px 90px 30px;
+    gap: 6px; align-items: center;
+  }
+  .pitcher-row input, .pitcher-row select {
+    width: 100%; padding: 5px 7px; font-size: 12px;
+    border: 1px solid #ddd; border-radius: 5px; background: #fff;
+  }
+  .pitcher-row input:focus, .pitcher-row select:focus { outline: none; border-color: #888; }
+  .pitcher-row .del-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 18px; color: #ccc; padding: 0; line-height: 1;
+  }
+  .pitcher-row .del-btn:hover { color: #a00; }
+  .p-row-hdr {
+    display: grid; grid-template-columns: 120px 1fr 80px 90px 30px;
+    gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: #999; padding: 0 0 3px;
+  }
+
+  .game-select-row { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .game-select-row label { font-size: 13px; font-weight: 600; color: #444; }
+  .game-select-row select {
+    padding: 6px 10px; font-size: 13px; border: 1px solid #ddd;
+    border-radius: 6px; background: #fafafa;
+  }
+  .game-select-row select:focus { outline: none; border-color: #888; }
+
+  /* status message */
+  .status-msg {
+    font-size: 13px; padding: 10px 14px; border-radius: 6px;
+    margin-top: 10px; display: none;
+  }
+  .status-msg.show  { display: block; }
+  .status-msg.ok    { background: #e6f9e6; color: #1a6a1a; border: 1px solid #9dd49d; }
+  .status-msg.error { background: #fdecea; color: #a00;    border: 1px solid #f5b0aa; }
+  .status-msg.info  { background: #e8f0fe; color: #1a3a8f; border: 1px solid #9db5f5; }
+
+  /* data.js output */
+  .output-area {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 11px; background: #1e1e1e; color: #d4d4d4;
+    border-radius: 6px; padding: 14px 16px; overflow-x: auto;
+    white-space: pre; max-height: 360px; overflow-y: auto;
+    margin-top: 12px; display: none;
+  }
+  .output-area.show { display: block; }
+
+  .inline-link { color: #1a3a8f; text-decoration: none; font-size: 12px; }
+  .inline-link:hover { text-decoration: underline; }
+
+  /* Anthropic API section */
+  .api-note { font-size: 12px; color: #888; margin-top: 8px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Admin · 2026 Mustang Playoffs</h1>
+  <a href="index.html">← View bracket</a>
+</header>
+
+<main>
+
+  <!-- ── SECTION 1: SEEDINGS ── -->
+  <div class="card">
+    <div class="card-title">1. Set team seedings</div>
+    <div class="card-desc">
+      Upload a CSV file with two columns: <strong>seed</strong> and <strong>team</strong>
+      (no header required, e.g. <code>1,Mets</code>), or enter them manually below.
+      After setting seedings, click <strong>Generate data.js</strong> to download the updated file.
+    </div>
+
+    <label class="file-label" for="csv-upload">
+      📂 Upload seedings CSV
+      <input type="file" id="csv-upload" accept=".csv,.txt" onchange="loadCSV(event)">
+    </label>
+
+    <table class="seed-table" style="margin-top:16px">
+      <thead><tr><th style="width:80px">Seed</th><th>Team name</th></tr></thead>
+      <tbody id="seed-tbody"></tbody>
+    </table>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="generateDataJS()">Generate data.js ↓</button>
+      <button class="btn btn-secondary" onclick="clearSeedings()">Clear</button>
+    </div>
+    <div id="seed-status" class="status-msg"></div>
+  </div>
+
+  <!-- ── SECTION 2: AFFIDAVIT PARSER ── -->
+  <div class="card">
+    <div class="card-title">2. Process affidavit</div>
+    <div class="card-desc">
+      Paste the text of a game affidavit below. Claude AI will parse the score,
+      inning-by-inning runs, and pitcher pitch counts. You can then review,
+      edit, and confirm the result before adding it to the bracket data.
+    </div>
+
+    <div class="game-select-row">
+      <label>Game:</label>
+      <select id="game-select">
+        <option value="">— Select game —</option>
+        <option value="G1">G1 · Tue 5/5 5:15 PM · Britton (Seeds 1 vs 8)</option>
+        <option value="G2">G2 · Tue 5/5 5:15 PM · Central MP (Seeds 4 vs 5)</option>
+        <option value="G3">G3 · Wed 5/6 5:15 PM · Britton (Seeds 2 vs 7)</option>
+        <option value="G4">G4 · Wed 5/6 5:15 PM · Central MP (Seeds 3 vs 6)</option>
+        <option value="G5">G5 · Sat 5/9 9:00 AM · Britton</option>
+        <option value="G6">G6 · Sat 5/9 9:00 AM · Central MP</option>
+        <option value="G7">G7 · Sat 5/9 12:00 PM · Britton</option>
+        <option value="G8">G8 · Sat 5/9 12:00 PM · Central MP</option>
+        <option value="G9">G9 · Mon 5/11 5:15 PM · Britton</option>
+        <option value="G10">G10 · Mon 5/11 5:15 PM · El Toro</option>
+        <option value="G11">G11 · Tue 5/12 5:15 PM · Britton</option>
+        <option value="G12">G12 · Wed 5/13 5:15 PM · Britton</option>
+        <option value="G13">G13 · Thu 5/14 5:15 PM · Britton</option>
+        <option value="G14">G14 · Sat 5/16 10:00 AM · Britton</option>
+        <option value="G15">G15 · Sat 5/16 · After closing (If necessary)</option>
+      </select>
+    </div>
+
+    <textarea id="affidavit-text" placeholder="Paste affidavit text here — any format is fine. Include team names, inning scores, and pitcher names with pitch counts."></textarea>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="parse-btn" onclick="parseAffidavit()">Parse with AI →</button>
+      <button class="btn btn-secondary" onclick="clearAffidavit()">Clear</button>
+    </div>
+    <div id="parse-status" class="status-msg"></div>
+
+    <!-- PARSED PREVIEW / EDIT FORM -->
+    <div class="preview-box" id="preview-box">
+      <div class="preview-title">Review &amp; edit — then confirm to add to bracket</div>
+
+      <div class="preview-score" id="preview-score"></div>
+
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:#888;margin-bottom:6px">Box Score</div>
+      <div class="innings-grid" id="innings-grid"></div>
+
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:#888;margin:12px 0 6px">Pitchers</div>
+      <div class="p-row-hdr"><span>Team</span><span>Name</span><span>Pitches</span><span>Game date</span><span></span></div>
+      <div class="pitcher-rows" id="pitcher-rows"></div>
+      <button class="btn btn-secondary" style="font-size:12px;padding:5px 12px" onclick="addPitcherRow()">+ Add pitcher</button>
+
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn btn-primary" onclick="confirmResult()">Confirm &amp; add to data.js ↓</button>
+        <button class="btn btn-danger"  onclick="discardPreview()">Discard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3: DATA.JS OUTPUT ── -->
+  <div class="card">
+    <div class="card-title">3. Download data.js</div>
+    <div class="card-desc">
+      After setting seedings and adding game results, click below to download the updated
+      <code>data.js</code> file. Replace the one in your GitHub repository and the bracket
+      will update automatically when the page reloads.
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="generateDataJS()">Download data.js ↓</button>
+      <button class="btn btn-secondary" onclick="togglePreviewJS()">Preview JS</button>
+    </div>
+    <pre class="output-area" id="js-preview"></pre>
+    <p class="api-note">
+      💡 After downloading, commit <code>data.js</code> to your GitHub repo.
+      The <code>index.html</code> bracket page will reflect all changes on reload.
+    </p>
+  </div>
+
+</main>
+
+<script src="data.js"></script>
+<script>
+// ── STATE ─────────────────────────────────────
+const S = JSON.parse(JSON.stringify(window.PLAYOFF_DATA)); // mutable copy
+let parsedResult = null; // holds the result being previewed
+
+// ── SEED TABLE ───────────────────────────────
+function buildSeedTable() {
+  const tbody = document.getElementById("seed-tbody");
+  tbody.innerHTML = "";
+  for (let i = 1; i <= 8; i++) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${i}</td>
+      <td><input id="seed-${i}" type="text" value="${S.seedings[i] || ""}" placeholder="Team name"></td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function readSeedInputs() {
+  for (let i = 1; i <= 8; i++) {
+    const v = document.getElementById("seed-" + i)?.value.trim();
+    if (v) S.seedings[i] = v;
+  }
+}
+
+function clearSeedings() {
+  for (let i = 1; i <= 8; i++) {
+    S.seedings[i] = "Seed " + i;
+    const el = document.getElementById("seed-" + i);
+    if (el) el.value = "";
+  }
+}
+
+function loadCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const lines = e.target.result.split(/\r?\n/).filter(l => l.trim());
+    lines.forEach(line => {
+      const parts = line.split(",").map(s => s.trim());
+      if (parts.length >= 2) {
+        const seed = parseInt(parts[0]);
+        const name = parts.slice(1).join(",").replace(/^"|"$/g, "");
+        if (seed >= 1 && seed <= 8 && name) {
+          S.seedings[seed] = name;
+          const el = document.getElementById("seed-" + seed);
+          if (el) el.value = name;
+        }
+      }
+    });
+    showStatus("seed-status", "ok", `Loaded ${lines.length} seedings from CSV.`);
+  };
+  reader.readAsText(file);
+}
+
+// ── AFFIDAVIT AI PARSER ──────────────────────
+async function parseAffidavit() {
+  const text = document.getElementById("affidavit-text").value.trim();
+  const gameId = document.getElementById("game-select").value;
+  if (!text) { showStatus("parse-status", "error", "Please paste affidavit text."); return; }
+  if (!gameId) { showStatus("parse-status", "error", "Please select a game."); return; }
+
+  const btn = document.getElementById("parse-btn");
+  btn.textContent = "Parsing…";
+  btn.disabled = true;
+  showStatus("parse-status", "info", "Sending to Claude AI…");
+
+  const prompt = `You are parsing a youth baseball game affidavit. Extract the following and return ONLY valid JSON, no markdown fences, no explanation.
+
+The game is 6 innings. Teams are from this list: ${Object.values(S.seedings).join(", ")}.
+
+Return this exact JSON shape:
+{
+  "homeTeam": "string",
+  "awayTeam": "string",
+  "innings": {
+    "home": [r1, r2, r3, r4, r5, r6],
+    "away": [r1, r2, r3, r4, r5, r6]
+  },
+  "pitchers": [
+    { "name": "string", "team": "string", "pitches": number, "gameDate": "YYYY-MM-DD" }
+  ]
+}
+
+Rules:
+- innings arrays must have exactly 6 integers (use 0 for scoreless innings, null if not played)
+- homeScore and awayScore are the sum of their innings arrays
+- gameDate should be the date of the game if mentioned, otherwise use today's date ${new Date().toISOString().slice(0,10)}
+- If a team is listed as "home" or "away" without a name, infer from context
+- pitcher team must match homeTeam or awayTeam exactly
+
+Affidavit text:
+${text}`;
+
+  try {
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    const raw = data.content.map(c => c.text || "").join("");
+    const parsed = JSON.parse(raw.replace(/```json|```/g, "").trim());
+    parsedResult = { gameId, ...parsed };
+    // Compute totals
+    parsedResult.homeScore = (parsed.innings.home || []).reduce((a,b)=>(a||0)+(b||0), 0);
+    parsedResult.awayScore = (parsed.innings.away || []).reduce((a,b)=>(a||0)+(b||0), 0);
+    showPreview(parsedResult);
+    showStatus("parse-status", "ok", "Parsed successfully — review below.");
+  } catch(e) {
+    showStatus("parse-status", "error", "Parse failed: " + e.message);
+  } finally {
+    btn.textContent = "Parse with AI →";
+    btn.disabled = false;
+  }
+}
+
+// ── PREVIEW FORM ─────────────────────────────
+function showPreview(r) {
+  // Score
+  document.getElementById("preview-score").innerHTML = `
+    <div class="preview-team">${r.homeTeam} <span id="ps-home">${r.homeScore}</span></div>
+    <span class="preview-at">@</span>
+    <div class="preview-team">${r.awayTeam} <span id="ps-away">${r.awayScore}</span></div>`;
+
+  // Innings grid
+  const grid = document.getElementById("innings-grid");
+  grid.innerHTML = "";
+  const addCell = (content, cls="") => {
+    const d = document.createElement("div");
+    d.className = cls;
+    d.innerHTML = content;
+    grid.appendChild(d);
+  };
+  addCell("", "hdr");
+  for (let i=1;i<=6;i++) addCell(i, "hdr inn-cell");
+  addCell("R", "hdr inn-cell");
+
+  ["home","away"].forEach(side => {
+    const teamName = side === "home" ? r.homeTeam : r.awayTeam;
+    addCell(teamName, "team-name-cell");
+    const innings = r.innings[side] || Array(6).fill(0);
+    for (let i=0;i<6;i++) {
+      const inp = document.createElement("input");
+      inp.type = "number"; inp.min = "0"; inp.value = innings[i] ?? 0;
+      inp.id = `inn-${side}-${i}`;
+      inp.oninput = () => recalcTotals();
+      const wrap = document.createElement("div");
+      wrap.className = "inn-cell";
+      wrap.appendChild(inp);
+      grid.appendChild(wrap);
+    }
+    const tot = document.createElement("div");
+    tot.className = "total-cell";
+    tot.id = "total-" + side;
+    tot.textContent = r[side + "Score"];
+    grid.appendChild(tot);
+  });
+
+  // Pitchers
+  document.getElementById("pitcher-rows").innerHTML = "";
+  (r.pitchers || []).forEach(p => addPitcherRow(p));
+  if (!r.pitchers?.length) addPitcherRow();
+
+  document.getElementById("preview-box").classList.add("show");
+}
+
+function recalcTotals() {
+  ["home","away"].forEach(side => {
+    let total = 0;
+    for (let i=0;i<6;i++) {
+      total += parseInt(document.getElementById(`inn-${side}-${i}`)?.value||0)||0;
+    }
+    const el = document.getElementById("total-" + side);
+    if (el) el.textContent = total;
+  });
+}
+
+function addPitcherRow(p = {}) {
+  const row = document.createElement("div");
+  row.className = "pitcher-row";
+  const teamOptions = Object.values(S.seedings)
+    .map(t => `<option value="${t}"${t===p.team?" selected":""}>${t}</option>`).join("");
+  row.innerHTML = `
+    <select>${teamOptions}</select>
+    <input type="text"   placeholder="Pitcher name" value="${p.name||""}">
+    <input type="number" placeholder="Pitches" min="0" max="85" value="${p.pitches||""}">
+    <input type="date"   value="${p.gameDate||new Date().toISOString().slice(0,10)}">
+    <button class="del-btn" onclick="this.closest('.pitcher-row').remove()">×</button>`;
+  document.getElementById("pitcher-rows").appendChild(row);
+}
+
+function confirmResult() {
+  if (!parsedResult) return;
+  const gameId = parsedResult.gameId;
+
+  // Read innings
+  const innings = { home: [], away: [] };
+  ["home","away"].forEach(side => {
+    for (let i=0;i<6;i++) {
+      innings[side].push(parseInt(document.getElementById(`inn-${side}-${i}`)?.value||0)||0);
+    }
+  });
+  const homeScore = innings.home.reduce((a,b)=>a+b,0);
+  const awayScore = innings.away.reduce((a,b)=>a+b,0);
+
+  // Read seeds from current data
+  const g = S.games[gameId];
+  function seedOf(slot) {
+    if (slot.seed) return slot.seed;
+    return null;
+  }
+
+  // Read pitchers
+  const pitchers = [];
+  document.querySelectorAll("#pitcher-rows .pitcher-row").forEach(row => {
+    const inputs = row.querySelectorAll("input");
+    const sel    = row.querySelector("select");
+    const name   = inputs[0].value.trim();
+    const pitches = parseInt(inputs[1].value) || 0;
+    const date   = inputs[2].value || new Date().toISOString().slice(0,10);
+    const team   = sel.value;
+    if (name && pitches > 0) pitchers.push({ name, team, pitches, gameDate: date });
+  });
+
+  // Build result object
+  const homeTeam = parsedResult.homeTeam;
+  const awayTeam = parsedResult.awayTeam;
+  // Find seeds
+  const homeSeed = Object.entries(S.seedings).find(([,v])=>v===homeTeam)?.[0] || null;
+  const awaySeed = Object.entries(S.seedings).find(([,v])=>v===awayTeam)?.[0] || null;
+
+  S.games[gameId].result = {
+    homeTeam, awayTeam,
+    homeSeed: homeSeed ? parseInt(homeSeed) : null,
+    awaySeed: awaySeed ? parseInt(awaySeed) : null,
+    homeScore, awayScore, innings, pitchers
+  };
+
+  discardPreview();
+  showStatus("parse-status", "ok", `${gameId} result saved. Click "Download data.js" to export.`);
+}
+
+function discardPreview() {
+  document.getElementById("preview-box").classList.remove("show");
+  parsedResult = null;
+}
+
+function clearAffidavit() {
+  document.getElementById("affidavit-text").value = "";
+  discardPreview();
+  hideStatus("parse-status");
+}
+
+// ── GENERATE DATA.JS ─────────────────────────
+function buildDataJS() {
+  readSeedInputs();
+  const out = `// ─────────────────────────────────────────────
+//  2026 MUSTANG DIVISION PLAYOFF DATA
+//  Generated by admin.html on ${new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}
+// ─────────────────────────────────────────────
+
+window.PLAYOFF_DATA = ${JSON.stringify(S, null, 2)};
+`;
+  return out;
+}
+
+function generateDataJS() {
+  const content = buildDataJS();
+  const blob = new Blob([content], { type: "application/javascript" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "data.js";
+  a.click();
+  showStatus("seed-status", "ok", "data.js downloaded! Replace the file in your GitHub repo.");
+}
+
+function togglePreviewJS() {
+  const el = document.getElementById("js-preview");
+  if (el.classList.contains("show")) {
+    el.classList.remove("show");
+  } else {
+    el.textContent = buildDataJS();
+    el.classList.add("show");
+  }
+}
+
+// ── STATUS HELPERS ───────────────────────────
+function showStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = "status-msg show " + type;
+  el.textContent = msg;
+}
+function hideStatus(id) {
+  document.getElementById(id).className = "status-msg";
+}
+
+// ── INIT ─────────────────────────────────────
+buildSeedTable();
+</script>
+</body>
+</html>

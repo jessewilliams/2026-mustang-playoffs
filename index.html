@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Mustang Division Playoffs</title>
+<style>
+  /* ── RESET & BASE ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 18px 32px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+  header h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.02em; }
+  header span { font-size: 13px; color: #aab; }
+
+  /* ── LAYOUT ── */
+  main { padding: 28px 24px; max-width: 1300px; margin: 0 auto; }
+
+  /* ── SECTION LABELS ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #666;
+    margin: 0 0 14px 0;
+  }
+
+  /* ── BRACKET LAYOUT ── */
+  .bracket-area { margin-bottom: 36px; }
+  .bracket-columns {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .round-col {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 180px;
+    max-width: 220px;
+  }
+  .round-col + .round-col { border-left: 1px solid #e0e0e0; }
+
+  .round-header {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #888;
+    text-align: center;
+    padding: 8px 12px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .round-slots {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 12px 10px;
+    gap: 10px;
+    justify-content: space-around;
+  }
+
+  /* ── GAME CARD ── */
+  .game-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+  .game-card:hover {
+    border-color: #999;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .game-card.has-result { border-color: #ccc; }
+
+  .game-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 9px;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+  }
+  .game-card-id { font-size: 9px; font-weight: 700; color: #999; letter-spacing: 0.06em; }
+  .game-card-status {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #888;
+  }
+  .game-card-status.final { color: #2a7a2a; }
+
+  .game-card-meta {
+    padding: 3px 9px 5px;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+  }
+  .game-card-meta-date { font-size: 10px; color: #555; font-weight: 600; }
+  .game-card-meta-loc  { font-size: 10px; color: #888; }
+
+  .team-row {
+    display: flex;
+    align-items: center;
+    padding: 6px 9px;
+    gap: 6px;
+  }
+  .team-row + .team-row { border-top: 1px solid #f0f0f0; }
+  .team-row.winner { background: #f0faf0; }
+  .team-row.loser  { background: #fafafa; }
+
+  .team-seed {
+    font-size: 10px;
+    color: #aaa;
+    font-weight: 600;
+    min-width: 14px;
+    text-align: right;
+  }
+  .team-name {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 500;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .team-name.tbd { color: #bbb; font-style: italic; font-weight: 400; }
+  .team-row.winner .team-name { font-weight: 700; color: #1a1a1a; }
+  .team-row.loser  .team-name { color: #aaa; }
+
+  .team-score {
+    font-size: 14px;
+    font-weight: 700;
+    min-width: 20px;
+    text-align: right;
+    color: #222;
+  }
+  .team-row.winner .team-score { color: #1a6e1a; }
+  .team-row.loser  .team-score { color: #aaa; }
+
+  /* connector lines between rounds */
+  .connector-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 20px;
+    flex-shrink: 0;
+  }
+  .connector-pair {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1;
+    justify-content: center;
+  }
+  .connector-line {
+    height: 1px;
+    background: #d0d0d0;
+    margin: auto 0;
+  }
+
+  /* ── CHAMPIONSHIP BOX ── */
+  .champ-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    padding: 20px 12px;
+    border-left: 1px solid #e0e0e0;
+  }
+  .champ-box {
+    border: 2px solid #1a1a2e;
+    border-radius: 8px;
+    padding: 14px 18px;
+    text-align: center;
+    background: #fff;
+    min-width: 140px;
+  }
+  .champ-box-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+  .champ-box-name  { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+  .champ-box-name.tbd { color: #bbb; font-style: italic; font-weight: 400; }
+
+  /* ── MODAL ── */
+  .modal-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+
+  .modal {
+    background: #fff;
+    border-radius: 10px;
+    max-width: 680px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 22px;
+    border-bottom: 1px solid #eee;
+    position: sticky; top: 0; background: #fff; z-index: 1;
+  }
+  .modal-title { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+  .modal-meta  { font-size: 12px; color: #777; margin-top: 2px; }
+  .modal-close {
+    background: none; border: none; cursor: pointer;
+    font-size: 22px; color: #aaa; line-height: 1; padding: 0 4px;
+  }
+  .modal-close:hover { color: #333; }
+  .modal-body { padding: 22px; }
+
+  /* ── SCORE DISPLAY (modal) ── */
+  .score-display {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .score-team-box {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    background: #f4f4f4;
+    border-radius: 8px;
+    padding: 10px 16px;
+  }
+  .score-team-name { font-size: 15px; font-weight: 600; color: #333; }
+  .score-team-runs { font-size: 30px; font-weight: 800; color: #1a3a8f; }
+  .score-team-box.winner .score-team-runs { color: #1a6e1a; }
+  .score-at { font-size: 14px; color: #aaa; }
+
+  /* ── BOX SCORE TABLE ── */
+  .box-score-wrap { margin-bottom: 24px; overflow-x: auto; }
+  .box-score-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #888; margin-bottom: 8px;
+  }
+  .box-score-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    min-width: 400px;
+  }
+  .box-score-table th {
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #888;
+    border-bottom: 1px solid #e8e8e8;
+    background: #fafafa;
+  }
+  .box-score-table th.team-col { text-align: left; min-width: 100px; }
+  .box-score-table td {
+    padding: 8px 10px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .box-score-table td.team-col { text-align: left; font-weight: 600; }
+  .box-score-table tr.winner-row td { background: #f5faf5; }
+  .box-score-table td.total-col { font-weight: 700; font-size: 14px; border-left: 1px solid #ddd; }
+  .box-score-table td.inning-val { color: #555; }
+  .box-score-table td.inning-val.has-runs { color: #1a1a1a; font-weight: 600; }
+
+  /* ── PITCHERS TABLE (modal) ── */
+  .pitchers-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #888; margin-bottom: 10px;
+  }
+  .pitchers-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .pitchers-table th {
+    padding: 5px 10px; text-align: left; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; color: #888; border-bottom: 1px solid #e8e8e8;
+    background: #fafafa;
+  }
+  .pitchers-table th.right { text-align: right; }
+  .pitchers-table td { padding: 9px 10px; border-bottom: 1px solid #f2f2f2; vertical-align: middle; }
+  .pitchers-table td.right { text-align: right; }
+
+  .team-pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: #e8e8e8;
+    color: #444;
+    margin-right: 6px;
+    white-space: nowrap;
+  }
+
+  .pitch-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .pitch-count { font-size: 13px; font-weight: 700; min-width: 26px; }
+  .pitch-count.low    { color: #2a8a2a; }
+  .pitch-count.mid    { color: #c87000; }
+  .pitch-count.high   { color: #b83000; }
+  .pitch-count.limit  { color: #900; }
+  .pitch-bar-bg { flex: 1; height: 6px; border-radius: 3px; background: #eee; min-width: 80px; }
+  .pitch-bar-fill { height: 100%; border-radius: 3px; }
+  .pitch-bar-fill.low   { background: #2a8a2a; }
+  .pitch-bar-fill.mid   { background: #c87000; }
+  .pitch-bar-fill.high  { background: #b83000; }
+  .pitch-bar-fill.limit { background: #900; }
+
+  .avail-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+  }
+  .avail-badge.available  { background: #e6f9e6; color: #1a6a1a; border: 1px solid #9dd49d; }
+  .avail-badge.out        { background: #fdecea; color: #a00; border: 1px solid #f5b0aa; }
+
+  .no-result-msg { text-align: center; padding: 32px; color: #aaa; font-size: 14px; font-style: italic; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    main { padding: 16px 12px; }
+    header { padding: 14px 16px; }
+    header h1 { font-size: 16px; }
+    .round-col { min-width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>2026 Mustang Division · Playoffs</h1>
+  <span id="header-status">Double Elimination</span>
+</header>
+
+<main>
+  <!-- WINNERS BRACKET -->
+  <div class="bracket-area">
+    <p class="section-label">Winners' Bracket</p>
+    <div class="bracket-columns" id="winners-bracket"></div>
+  </div>
+
+  <!-- ELIMINATION BRACKET -->
+  <div class="bracket-area">
+    <p class="section-label">Elimination Bracket</p>
+    <div class="bracket-columns" id="elim-bracket"></div>
+  </div>
+</main>
+
+<!-- GAME DETAIL MODAL -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title">Game</div>
+        <div class="modal-meta"  id="modal-meta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+// ── HELPERS ──────────────────────────────────
+
+const D = window.PLAYOFF_DATA;
+
+function teamName(seed) {
+  return D.seedings[seed] || ("Seed " + seed);
+}
+
+function resolveSlot(slot) {
+  if (!slot) return { name: "TBD", seed: null };
+  if (slot.seed) return { name: teamName(slot.seed), seed: slot.seed };
+  if (slot.winnerOf) {
+    const r = D.games[slot.winnerOf]?.result;
+    if (!r) return { name: "TBD", seed: null };
+    const win = r.homeScore > r.awayScore ? "home" : "away";
+    const s   = win === "home" ? r.homeSeed : r.awaySeed;
+    return { name: r[win + "Team"], seed: s };
+  }
+  if (slot.loserOf) {
+    const r = D.games[slot.loserOf]?.result;
+    if (!r) return { name: "TBD", seed: null };
+    const lose = r.homeScore > r.awayScore ? "away" : "home";
+    const s    = lose === "home" ? r.homeSeed : r.awaySeed;
+    return { name: r[lose + "Team"], seed: s };
+  }
+  return { name: "TBD", seed: null };
+}
+
+function pitchClass(n) {
+  if (n <= 20) return "low";
+  if (n <= 40) return "mid";
+  if (n <= 60) return "high";
+  return "limit";
+}
+
+function restRequired(pitches) {
+  for (const rule of D.restRules) {
+    if (pitches <= rule.maxPitches) return rule.restDays;
+  }
+  return 3;
+}
+
+// Returns { available: bool, outUntil: "May 9" or null }
+function pitcherAvailability(pitcher) {
+  const rest = restRequired(pitcher.pitches);
+  if (rest === 0) return { available: true, outUntil: null };
+  const gameDate = new Date(pitcher.gameDate);
+  const eligDate = new Date(gameDate);
+  eligDate.setDate(eligDate.getDate() + rest + 1); // eligible AFTER rest days
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (eligDate <= today) return { available: true, outUntil: null };
+  const label = eligDate.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return { available: false, outUntil: label };
+}
+
+// ── BUILD BRACKET ────────────────────────────
+
+function makeGameCard(gameId) {
+  const g = D.games[gameId];
+  const home = resolveSlot(g.homeSlot);
+  const away = resolveSlot(g.awaySlot);
+  const r = g.result;
+
+  const homeWon = r && r.homeScore > r.awayScore;
+  const awayWon = r && r.awayScore > r.homeScore;
+
+  const card = document.createElement("div");
+  card.className = "game-card" + (r ? " has-result" : "");
+  card.onclick = () => openModal(gameId);
+
+  const statusText = r ? "FINAL" : (home.name !== "TBD" && away.name !== "TBD" ? "UPCOMING" : "");
+  const statusClass = r ? "final" : "";
+
+  card.innerHTML = `
+    <div class="game-card-header">
+      <span class="game-card-id">${gameId}${g.ifNecessary ? " · IF NEC." : ""}</span>
+      <span class="game-card-status ${statusClass}">${statusText}</span>
+    </div>
+    <div class="game-card-meta">
+      <div class="game-card-meta-date">${g.date} · ${g.time}</div>
+      <div class="game-card-meta-loc">${g.location}</div>
+    </div>
+    <div class="team-row ${homeWon ? "winner" : awayWon ? "loser" : ""}">
+      <span class="team-seed">${home.seed ?? ""}</span>
+      <span class="team-name ${home.name === "TBD" ? "tbd" : ""}">${home.name}</span>
+      <span class="team-score">${r ? r.homeScore : ""}</span>
+    </div>
+    <div class="team-row ${awayWon ? "winner" : homeWon ? "loser" : ""}">
+      <span class="team-seed">${away.seed ?? ""}</span>
+      <span class="team-name ${away.name === "TBD" ? "tbd" : ""}">${away.name}</span>
+      <span class="team-score">${r ? r.awayScore : ""}</span>
+    </div>`;
+  return card;
+}
+
+function makeRoundCol(label, gameIds) {
+  const col = document.createElement("div");
+  col.className = "round-col";
+  col.innerHTML = `<div class="round-header">${label}</div>`;
+  const slots = document.createElement("div");
+  slots.className = "round-slots";
+  gameIds.forEach(id => slots.appendChild(makeGameCard(id)));
+  col.appendChild(slots);
+  return col;
+}
+
+function buildWinnersBracket() {
+  const container = document.getElementById("winners-bracket");
+  container.innerHTML = "";
+
+  // Round 1: G1 G2 G3 G4
+  container.appendChild(makeRoundCol("Round 1", ["G1", "G2", "G3", "G4"]));
+  // Round 2: G5 G6
+  container.appendChild(makeRoundCol("Round 2", ["G5", "G6"]));
+  // Winners final: G11
+  container.appendChild(makeRoundCol("Winners Final", ["G11"]));
+
+  // Championship column
+  const champCol = document.createElement("div");
+  champCol.className = "champ-col";
+
+  const champGame = D.games["G14"];
+  const champResult = champGame?.result;
+  let champName = "TBD";
+  let champClass = "tbd";
+  if (champResult) {
+    champName = champResult.homeScore > champResult.awayScore
+      ? champResult.homeTeam : champResult.awayTeam;
+    champClass = "";
+  }
+
+  champCol.innerHTML = `
+    <div class="champ-box">
+      <div class="champ-box-label">🏆 Champion</div>
+      <div class="champ-box-name ${champClass}">${champName}</div>
+    </div>`;
+  container.appendChild(champCol);
+}
+
+function buildElimBracket() {
+  const container = document.getElementById("elim-bracket");
+  container.innerHTML = "";
+
+  // Elim R1: G7 G8
+  container.appendChild(makeRoundCol("Elim Round 1", ["G7", "G8"]));
+  // Elim R2: G9 G10
+  container.appendChild(makeRoundCol("Elim Round 2", ["G9", "G10"]));
+  // Elim semi: G12
+  container.appendChild(makeRoundCol("Elim Semi", ["G12"]));
+  // Elim final: G13
+  container.appendChild(makeRoundCol("Elim Final", ["G13"]));
+  // Championship + if necessary
+  const rightCol = document.createElement("div");
+  rightCol.className = "round-col";
+  rightCol.innerHTML = `<div class="round-header">Championship</div>`;
+  const slots = document.createElement("div");
+  slots.className = "round-slots";
+  slots.appendChild(makeGameCard("G14"));
+  slots.appendChild(makeGameCard("G15"));
+  rightCol.appendChild(slots);
+  container.appendChild(rightCol);
+}
+
+function buildBracket() {
+  buildWinnersBracket();
+  buildElimBracket();
+}
+
+// ── MODAL ────────────────────────────────────
+
+function openModal(gameId) {
+  const g = D.games[gameId];
+  const home = resolveSlot(g.homeSlot);
+  const away = resolveSlot(g.awaySlot);
+  const r = g.result;
+
+  document.getElementById("modal-title").textContent =
+    `${gameId}: ${home.name} vs. ${away.name}`;
+  document.getElementById("modal-meta").textContent =
+    `${g.date} · ${g.time} · ${g.location}${g.ifNecessary ? " · If Necessary" : ""}`;
+
+  const body = document.getElementById("modal-body");
+
+  if (!r) {
+    body.innerHTML = `<div class="no-result-msg">No result recorded yet.</div>`;
+  } else {
+    const homeWon = r.homeScore > r.awayScore;
+    body.innerHTML = buildModalContent(r, homeWon);
+  }
+
+  document.getElementById("modal-backdrop").classList.add("open");
+}
+
+function buildModalContent(r, homeWon) {
+  // Score display
+  let html = `<div class="score-display">
+    <div class="score-team-box ${homeWon ? "winner" : ""}">
+      <span class="score-team-name">${r.homeTeam}</span>
+      <span class="score-team-runs">${r.homeScore}</span>
+    </div>
+    <span class="score-at">@</span>
+    <div class="score-team-box ${!homeWon ? "winner" : ""}">
+      <span class="score-team-name">${r.awayTeam}</span>
+      <span class="score-team-runs">${r.awayScore}</span>
+    </div>
+  </div>`;
+
+  // Box score
+  html += `<div class="box-score-wrap">
+    <div class="box-score-label">Box Score</div>
+    <table class="box-score-table">
+      <thead><tr>
+        <th class="team-col">Team</th>`;
+  for (let i = 1; i <= 6; i++) html += `<th>${i}</th>`;
+  html += `<th class="total-col">R</th></tr></thead><tbody>`;
+
+  // Home row
+  const homeInnings = r.innings?.home || Array(6).fill(null);
+  const awayInnings = r.innings?.away || Array(6).fill(null);
+  html += buildBoxRow(r.homeTeam, homeInnings, r.homeScore, homeWon);
+  html += buildBoxRow(r.awayTeam, awayInnings, r.awayScore, !homeWon);
+  html += `</tbody></table></div>`;
+
+  // Pitchers
+  if (r.pitchers && r.pitchers.length > 0) {
+    html += `<div class="pitchers-label">Pitchers</div>
+    <table class="pitchers-table">
+      <thead><tr>
+        <th>Player</th>
+        <th class="right">Pitches</th>
+        <th class="right">Next game eligibility</th>
+      </tr></thead><tbody>`;
+
+    r.pitchers.forEach(p => {
+      const cls = pitchClass(p.pitches);
+      const pct = Math.min(100, Math.round((p.pitches / 85) * 100));
+      const avail = pitcherAvailability(p);
+      const badgeClass = avail.available ? "available" : "out";
+      const badgeText  = avail.available ? "available" : `out until ${avail.outUntil}`;
+      html += `<tr>
+        <td><span class="team-pill">${p.team}</span>${p.name}</td>
+        <td class="right">
+          <div class="pitch-bar-wrap" style="justify-content:flex-end">
+            <span class="pitch-count ${cls}">${p.pitches}</span>
+            <div class="pitch-bar-bg">
+              <div class="pitch-bar-fill ${cls}" style="width:${pct}%"></div>
+            </div>
+          </div>
+        </td>
+        <td class="right"><span class="avail-badge ${badgeClass}">${badgeText}</span></td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+  }
+
+  return html;
+}
+
+function buildBoxRow(team, innings, total, won) {
+  let row = `<tr class="${won ? "winner-row" : ""}">
+    <td class="team-col">${team}</td>`;
+  innings.forEach(val => {
+    const v = val ?? "—";
+    const hasRuns = typeof val === "number" && val > 0;
+    row += `<td class="inning-val ${hasRuns ? "has-runs" : ""}">${v}</td>`;
+  });
+  row += `<td class="total-col">${total}</td></tr>`;
+  return row;
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById("modal-backdrop")) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById("modal-backdrop").classList.remove("open");
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModalDirect(); });
+
+// ── INIT ─────────────────────────────────────
+buildBracket();
+</script>
+</body>
+</html>
