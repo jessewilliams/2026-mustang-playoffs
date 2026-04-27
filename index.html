@@ -485,7 +485,7 @@ function makeGameCard(gameId) {
 
   card.innerHTML = `
     <div class="game-card-header">
-      <span class="game-card-id">${gameId}${g.ifNecessary ? " · IF NEC." : ""}</span>
+      <span class="game-card-id">${gameId}${g.ifNecessary ? " · IF NECESSARY" : ""}</span>
       <span class="game-card-status ${statusClass}">${statusText}</span>
     </div>
     <div class="game-card-meta">
@@ -525,13 +525,22 @@ function buildWinnersBracket() {
   container.appendChild(makeRoundCol("Winners Final", ["G11"]));
 
   // Championship + if necessary
+  // G14 sits in the top half (aligned with G11), G15 below
   const champRoundCol = document.createElement("div");
   champRoundCol.className = "round-col";
   champRoundCol.innerHTML = `<div class="round-header">Championship</div>`;
   const champSlots = document.createElement("div");
-  champSlots.className = "round-slots";
-  champSlots.appendChild(makeGameCard("G14"));
-  champSlots.appendChild(makeGameCard("G15"));
+  champSlots.style.cssText = "display:flex;flex-direction:column;flex:1;padding:12px 10px;gap:10px;";
+  // Top half: G14 centered in upper 50%
+  const topHalf = document.createElement("div");
+  topHalf.style.cssText = "flex:1;display:flex;flex-direction:column;justify-content:center;";
+  topHalf.appendChild(makeGameCard("G14"));
+  // Bottom half: G15 centered in lower 50%
+  const botHalf = document.createElement("div");
+  botHalf.style.cssText = "flex:1;display:flex;flex-direction:column;justify-content:center;";
+  botHalf.appendChild(makeGameCard("G15"));
+  champSlots.appendChild(topHalf);
+  champSlots.appendChild(botHalf);
   champRoundCol.appendChild(champSlots);
   container.appendChild(champRoundCol);
 

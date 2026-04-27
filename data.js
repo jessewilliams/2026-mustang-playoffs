@@ -226,7 +226,7 @@ window.PLAYOFF_DATA = {
     },
 
     G15: {
-      date: "Sat 5/16", time: "After closing", location: "Britton",
+      date: "Sat 5/16", time: "TBD", location: "Britton",
       homeSlot: { loserOf: "G14" }, awaySlot: { winnerOf: "G14" },
       ifNecessary: true,
       result: null
