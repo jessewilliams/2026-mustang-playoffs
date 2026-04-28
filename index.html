@@ -566,12 +566,12 @@ function makeGameCard(gameId) {
     </div>
     <div class="team-row ${homeWon ? "winner" : awayWon ? "loser" : ""}">
       <span class="team-seed">${home.seed ?? ""}</span>
-      <span class="team-name ${homeCls}">${homeDisplay}${homeIsHome ? ' <strong>(home)</strong>' : ''}</span>
+      <span class="team-name ${homeCls}">${homeDisplay}${homeIsHome ? ' <span style="font-weight:600">(h)</span>' : ''}</span>
       <span class="team-score">${r ? r.homeScore : ""}</span>
     </div>
     <div class="team-row ${awayWon ? "winner" : homeWon ? "loser" : ""}">
       <span class="team-seed">${away.seed ?? ""}</span>
-      <span class="team-name ${awayCls}">${awayDisplay}${awayIsHome ? ' <strong>(home)</strong>' : ''}</span>
+      <span class="team-name ${awayCls}">${awayDisplay}${awayIsHome ? ' <span style="font-weight:600">(h)</span>' : ''}</span>
       <span class="team-score">${r ? r.awayScore : ""}</span>
     </div>`;
   return card;
@@ -691,10 +691,19 @@ function openModal(gameId) {
 
   const homeLabel = home.pending ? (home.label || "TBD") : (home.name || "TBD");
   const awayLabel = away.pending ? (away.label || "TBD") : (away.name || "TBD");
-  document.getElementById("modal-title").textContent =
-    `${gameId}: ${homeLabel} vs. ${awayLabel}`;
 
   const designatedHome = determineHomeTeam(gameId);
+  // Title: visitor @ home (baseball convention)
+  let visitorLabel, homeTeamLabel;
+  if (designatedHome === "home") {
+    visitorLabel = awayLabel; homeTeamLabel = homeLabel;
+  } else if (designatedHome === "away") {
+    visitorLabel = homeLabel; homeTeamLabel = awayLabel;
+  } else {
+    visitorLabel = homeLabel; homeTeamLabel = awayLabel;
+  }
+  document.getElementById("modal-title").textContent =
+    `${gameId}: ${visitorLabel} @ ${homeTeamLabel}`;
   document.getElementById("modal-meta").textContent =
     `${g.date} · ${g.time} · ${g.location}${g.ifNecessary ? " · If Necessary" : ""}`;
 
@@ -711,22 +720,26 @@ function openModal(gameId) {
 }
 
 function buildModalContent(r, homeWon, designatedHome) {
-  const homeIsHome = designatedHome === "home";
-  const awayIsHome = designatedHome === "away";
-  // Score display
+  // Determine which slot-team is actually the visitor and which is home
+  // r.homeTeam/r.awayTeam are slot-based; designatedHome tells us the real home team
+  const slotHomeIsRealHome = (designatedHome === "home" || designatedHome === null);
+  const visitor   = slotHomeIsRealHome ? { name: r.awayTeam, score: r.awayScore, innings: r.innings?.away, won: !homeWon } : { name: r.homeTeam, score: r.homeScore, innings: r.innings?.home, won: homeWon };
+  const trueHome  = slotHomeIsRealHome ? { name: r.homeTeam, score: r.homeScore, innings: r.innings?.home, won: homeWon  } : { name: r.awayTeam, score: r.awayScore, innings: r.innings?.away, won: !homeWon };
+
+  // Score display: visitor @ home
   let html = `<div class="score-display">
-    <div class="score-team-box ${homeWon ? "winner" : ""}">
-      <span class="score-team-name">${r.homeTeam}</span>
-      <span class="score-team-runs">${r.homeScore}</span>
+    <div class="score-team-box ${visitor.won ? "winner" : ""}">
+      <span class="score-team-name">${visitor.name}</span>
+      <span class="score-team-runs">${visitor.score}</span>
     </div>
     <span class="score-at">@</span>
-    <div class="score-team-box ${!homeWon ? "winner" : ""}">
-      <span class="score-team-name">${r.awayTeam}</span>
-      <span class="score-team-runs">${r.awayScore}</span>
+    <div class="score-team-box ${trueHome.won ? "winner" : ""}">
+      <span class="score-team-name">${trueHome.name}</span>
+      <span class="score-team-runs">${trueHome.score}</span>
     </div>
   </div>`;
 
-  // Box score
+  // Box score: visitor on top, home on bottom (baseball convention)
   html += `<div class="box-score-wrap">
     <div class="box-score-label">Box Score</div>
     <table class="box-score-table">
@@ -735,11 +748,10 @@ function buildModalContent(r, homeWon, designatedHome) {
   for (let i = 1; i <= 6; i++) html += `<th>${i}</th>`;
   html += `<th class="total-col">R</th></tr></thead><tbody>`;
 
-  // Home row
-  const homeInnings = r.innings?.home || Array(6).fill(null);
-  const awayInnings = r.innings?.away || Array(6).fill(null);
-  html += buildBoxRow(r.homeTeam, homeInnings, r.homeScore, homeWon);
-  html += buildBoxRow(r.awayTeam, awayInnings, r.awayScore, !homeWon);
+  const visInnings   = visitor.innings  || Array(6).fill(null);
+  const homeInnings  = trueHome.innings || Array(6).fill(null);
+  html += buildBoxRow(visitor.name,  visInnings,  visitor.score,  visitor.won);
+  html += buildBoxRow(trueHome.name, homeInnings, trueHome.score, trueHome.won);
   html += `</tbody></table></div>`;
 
   // Pitchers
