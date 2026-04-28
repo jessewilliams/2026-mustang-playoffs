@@ -566,12 +566,12 @@ function makeGameCard(gameId) {
     </div>
     <div class="team-row ${homeWon ? "winner" : awayWon ? "loser" : ""}">
       <span class="team-seed">${home.seed ?? ""}</span>
-      <span class="team-name ${homeCls}">${homeDisplay}${homeIsHome ? ' <strong>(H)</strong>' : ''}</span>
+      <span class="team-name ${homeCls}">${homeDisplay}${homeIsHome ? ' <strong>(home)</strong>' : ''}</span>
       <span class="team-score">${r ? r.homeScore : ""}</span>
     </div>
     <div class="team-row ${awayWon ? "winner" : homeWon ? "loser" : ""}">
       <span class="team-seed">${away.seed ?? ""}</span>
-      <span class="team-name ${awayCls}">${awayDisplay}${awayIsHome ? ' <strong>(H)</strong>' : ''}</span>
+      <span class="team-name ${awayCls}">${awayDisplay}${awayIsHome ? ' <strong>(home)</strong>' : ''}</span>
       <span class="team-score">${r ? r.awayScore : ""}</span>
     </div>`;
   return card;
@@ -716,12 +716,12 @@ function buildModalContent(r, homeWon, designatedHome) {
   // Score display
   let html = `<div class="score-display">
     <div class="score-team-box ${homeWon ? "winner" : ""}">
-      <span class="score-team-name">${r.homeTeam}${homeIsHome ? ' <strong>(H)</strong>' : ''}</span>
+      <span class="score-team-name">${r.homeTeam}</span>
       <span class="score-team-runs">${r.homeScore}</span>
     </div>
     <span class="score-at">@</span>
     <div class="score-team-box ${!homeWon ? "winner" : ""}">
-      <span class="score-team-name">${r.awayTeam}${awayIsHome ? ' <strong>(H)</strong>' : ''}</span>
+      <span class="score-team-name">${r.awayTeam}</span>
       <span class="score-team-runs">${r.awayScore}</span>
     </div>
   </div>`;
