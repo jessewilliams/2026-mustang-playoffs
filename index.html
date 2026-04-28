@@ -460,6 +460,74 @@ function pitcherAvailability(pitcher) {
   return { available: false, outUntil: label };
 }
 
+
+// ── HOME TEAM LOGIC ──────────────────────────
+// (a) Higher seed (lower number) is home when:
+//     - Both teams won their last game, OR
+//     - Both teams lost their last game, OR
+//     - Either team had a bye (seed-based slot), OR
+//     - Round 1 (both slots are seed-based)
+// (b) The team that WON their last game is home when
+//     playing a team that LOST their last game.
+
+function getLastResult(team, gameId) {
+  // Find the most recent completed game before gameId that this team played in
+  // Returns "won", "lost", or "bye" (came in via seed slot with no prior game)
+  const g = D.games[gameId];
+
+  function slotOrigin(slot) {
+    if (slot.seed) return { type: "seed" };
+    if (slot.winnerOf) return { type: "won", sourceGame: slot.winnerOf };
+    if (slot.loserOf)  return { type: "lost", sourceGame: slot.loserOf };
+    return { type: "unknown" };
+  }
+
+  // Figure out which slot this team came from
+  const homeResolved = resolveSlot(g.homeSlot);
+  const awayResolved = resolveSlot(g.awaySlot);
+
+  if (!homeResolved.name || !awayResolved.name) return null;
+
+  // For the home slot
+  const homeOrigin = slotOrigin(g.homeSlot);
+  const awayOrigin = slotOrigin(g.awaySlot);
+
+  return { homeOrigin, awayOrigin };
+}
+
+function determineHomeTeam(gameId) {
+  // Returns "home" if the homeSlot team is home, "away" if awaySlot team is home,
+  // null if cannot be determined yet
+  const g = D.games[gameId];
+  const homeResolved = resolveSlot(g.homeSlot);
+  const awayResolved = resolveSlot(g.awaySlot);
+
+  // If either team is not yet known, can't determine
+  if (homeResolved.pending || awayResolved.pending) return null;
+
+  function slotStatus(slot) {
+    // Returns: "seed" (bye/first round), "won", "lost"
+    if (slot.seed) return "seed";
+    if (slot.winnerOf) return "won";
+    if (slot.loserOf)  return "lost";
+    return "seed";
+  }
+
+  const homeStatus = slotStatus(g.homeSlot);
+  const awayStatus = slotStatus(g.awaySlot);
+
+  // Rule (b): one team won, one team lost → winner is home
+  if (homeStatus === "won" && awayStatus === "lost") return "home";  // homeSlot team is home
+  if (homeStatus === "lost" && awayStatus === "won") return "away";  // awaySlot team is home
+
+  // Rule (a): all other cases → higher seed (lower number) is home
+  // Higher seed = lower seed number
+  const homeSeed = homeResolved.seed;
+  const awaySeed = awayResolved.seed;
+  if (homeSeed === null || awaySeed === null) return null;
+  return homeSeed < awaySeed ? "home" : "away";
+}
+
 // ── BUILD BRACKET ────────────────────────────
 
 function makeGameCard(gameId) {
@@ -483,6 +551,10 @@ function makeGameCard(gameId) {
   const homeCls     = home.pending ? "pending" : "";
   const awayCls     = away.pending ? "pending" : "";
 
+  const designatedHome = determineHomeTeam(gameId);
+  const homeIsHome = designatedHome === "home";
+  const awayIsHome = designatedHome === "away";
+
   card.innerHTML = `
     <div class="game-card-header">
       <span class="game-card-id">${gameId}${g.ifNecessary ? " · IF NECESSARY" : ""}</span>
@@ -494,12 +566,12 @@ function makeGameCard(gameId) {
     </div>
     <div class="team-row ${homeWon ? "winner" : awayWon ? "loser" : ""}">
       <span class="team-seed">${home.seed ?? ""}</span>
-      <span class="team-name ${homeCls}">${homeDisplay}</span>
+      <span class="team-name ${homeCls}">${homeDisplay}${homeIsHome ? ' <strong>(H)</strong>' : ''}</span>
       <span class="team-score">${r ? r.homeScore : ""}</span>
     </div>
     <div class="team-row ${awayWon ? "winner" : homeWon ? "loser" : ""}">
       <span class="team-seed">${away.seed ?? ""}</span>
-      <span class="team-name ${awayCls}">${awayDisplay}</span>
+      <span class="team-name ${awayCls}">${awayDisplay}${awayIsHome ? ' <strong>(H)</strong>' : ''}</span>
       <span class="team-score">${r ? r.awayScore : ""}</span>
     </div>`;
   return card;
@@ -621,6 +693,8 @@ function openModal(gameId) {
   const awayLabel = away.pending ? (away.label || "TBD") : (away.name || "TBD");
   document.getElementById("modal-title").textContent =
     `${gameId}: ${homeLabel} vs. ${awayLabel}`;
+
+  const designatedHome = determineHomeTeam(gameId);
   document.getElementById("modal-meta").textContent =
     `${g.date} · ${g.time} · ${g.location}${g.ifNecessary ? " · If Necessary" : ""}`;
 
@@ -630,22 +704,24 @@ function openModal(gameId) {
     body.innerHTML = `<div class="no-result-msg">No result recorded yet.</div>`;
   } else {
     const homeWon = r.homeScore > r.awayScore;
-    body.innerHTML = buildModalContent(r, homeWon);
+    body.innerHTML = buildModalContent(r, homeWon, designatedHome);
   }
 
   document.getElementById("modal-backdrop").classList.add("open");
 }
 
-function buildModalContent(r, homeWon) {
+function buildModalContent(r, homeWon, designatedHome) {
+  const homeIsHome = designatedHome === "home";
+  const awayIsHome = designatedHome === "away";
   // Score display
   let html = `<div class="score-display">
     <div class="score-team-box ${homeWon ? "winner" : ""}">
-      <span class="score-team-name">${r.homeTeam}</span>
+      <span class="score-team-name">${r.homeTeam}${homeIsHome ? ' <strong>(H)</strong>' : ''}</span>
       <span class="score-team-runs">${r.homeScore}</span>
     </div>
     <span class="score-at">@</span>
     <div class="score-team-box ${!homeWon ? "winner" : ""}">
-      <span class="score-team-name">${r.awayTeam}</span>
+      <span class="score-team-name">${r.awayTeam}${awayIsHome ? ' <strong>(H)</strong>' : ''}</span>
       <span class="score-team-runs">${r.awayScore}</span>
     </div>
   </div>`;
