@@ -39,23 +39,23 @@ window.PLAYOFF_DATA = {
     },
 
     G5: {
-      date: "Sat 5/9", time: "9:00 AM", location: "Britton",
+      date: "Sat 5/9", time: "3:00 PM", location: "Britton",
       homeSlot: { winnerOf: "G1" }, awaySlot: { winnerOf: "G2" },
       result: null
     },
     G6: {
-      date: "Sat 5/9", time: "9:00 AM", location: "Central MP",
+      date: "Sat 5/9", time: "9:00 AM", location: "Britton",
       homeSlot: { winnerOf: "G3" }, awaySlot: { winnerOf: "G4" },
       result: null
     },
 
     G7: {
-      date: "Sat 5/9", time: "12:00 PM", location: "Britton",
+      date: "Sat 5/9", time: "12:00 PM", location: "Central MP",
       homeSlot: { loserOf: "G1" }, awaySlot: { loserOf: "G2" },
       result: null
     },
     G8: {
-      date: "Sat 5/9", time: "12:00 PM", location: "Central MP",
+      date: "Sat 5/9", time: "12:00 PM", location: "Britton",
       homeSlot: { loserOf: "G3" }, awaySlot: { loserOf: "G4" },
       result: null
     },
@@ -72,13 +72,13 @@ window.PLAYOFF_DATA = {
     },
 
     G11: {
-      date: "Tue 5/12", time: "5:15 PM", location: "Britton",
+      date: "Wed 5/13", time: "5:15 PM", location: "Britton",
       homeSlot: { winnerOf: "G5" }, awaySlot: { winnerOf: "G6" },
       result: null
     },
 
     G12: {
-      date: "Wed 5/13", time: "5:15 PM", location: "Britton",
+      date: "Tue 5/12", time: "5:15 PM", location: "Britton",
       homeSlot: { winnerOf: "G9" }, awaySlot: { winnerOf: "G10" },
       result: null
     },
