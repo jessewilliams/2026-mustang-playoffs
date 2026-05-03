@@ -51,10 +51,10 @@ window.PLAYOFF_DATA = {
       result: null
     },
 
-    // ── WINNERS BRACKET FINAL ─────────────────
-    G11: {
-      date: "Wed 5/13", time: "5:15 PM", location: "Britton",
-      homeSlot: { winnerOf: "G8" }, awaySlot: { winnerOf: "G6" },
+    // ── WINNERS FINAL ─────────────────────────
+    G12: {
+      date: "Tue 5/12", time: "5:15 PM", location: "Britton",
+      homeSlot: { winnerOf: "G6" }, awaySlot: { winnerOf: "G8" },
       result: null
     },
 
@@ -73,38 +73,38 @@ window.PLAYOFF_DATA = {
     // ── ELIMINATION BRACKET ROUND 2 ──────────
     G9: {
       date: "Mon 5/11", time: "5:15 PM", location: "El Toro",
-      homeSlot: { winnerOf: "G7" }, awaySlot: { winnerOf: "G5" },
+      homeSlot: { loserOf: "G6" }, awaySlot: { winnerOf: "G7" },
       result: null
     },
     G10: {
       date: "Mon 5/11", time: "5:15 PM", location: "Britton",
-      homeSlot: { loserOf: "G8" }, awaySlot: { loserOf: "G6" },
+      homeSlot: { loserOf: "G8" }, awaySlot: { winnerOf: "G5" },
       result: null
     },
 
-    // ── ELIMINATION BRACKET SEMI ──────────────
-    G12: {
-      date: "Tue 5/12", time: "5:15 PM", location: "Britton",
+    // ── ELIMINATION SEMI ──────────────────────
+    G11: {
+      date: "Wed 5/13", time: "5:15 PM", location: "Britton",
       homeSlot: { winnerOf: "G10" }, awaySlot: { winnerOf: "G9" },
       result: null
     },
 
-    // ── ELIMINATION BRACKET FINAL ─────────────
+    // ── ELIMINATION FINAL ─────────────────────
     G13: {
       date: "Thu 5/14", time: "5:15 PM", location: "Britton",
-      homeSlot: { loserOf: "G11" }, awaySlot: { winnerOf: "G12" },
+      homeSlot: { loserOf: "G12" }, awaySlot: { winnerOf: "G11" },
       result: null
     },
 
     // ── CHAMPIONSHIP ─────────────────────────
     G14: {
       date: "Sat 5/16", time: "10:00 AM", location: "Britton",
-      homeSlot: { winnerOf: "G11" }, awaySlot: { winnerOf: "G13" },
+      homeSlot: { winnerOf: "G12" }, awaySlot: { winnerOf: "G13" },
       result: null
     },
     G15: {
       date: "Sat 5/16", time: "TBD", location: "Britton",
-      homeSlot: { loserOf: "G14" }, awaySlot: { winnerOf: "G14" },
+      homeSlot: { winnerOf: "G14" }, awaySlot: { loserOf: "G14" },
       ifNecessary: true,
       result: null
     }
