@@ -17,6 +17,7 @@ window.PLAYOFF_DATA = {
 
   games: {
 
+    // ── ROUND 1 ──────────────────────────────
     G1: {
       date: "Tue 5/5", time: "5:15 PM", location: "Britton",
       homeSlot: { seed: 1 }, awaySlot: { seed: 8 },
@@ -24,77 +25,83 @@ window.PLAYOFF_DATA = {
     },
     G2: {
       date: "Tue 5/5", time: "5:15 PM", location: "Central MP",
-      homeSlot: { seed: 4 }, awaySlot: { seed: 5 },
+      homeSlot: { seed: 5 }, awaySlot: { seed: 4 },
       result: null
     },
     G3: {
       date: "Wed 5/6", time: "5:15 PM", location: "Britton",
-      homeSlot: { seed: 2 }, awaySlot: { seed: 7 },
+      homeSlot: { seed: 3 }, awaySlot: { seed: 6 },
       result: null
     },
     G4: {
       date: "Wed 5/6", time: "5:15 PM", location: "Central MP",
-      homeSlot: { seed: 3 }, awaySlot: { seed: 6 },
+      homeSlot: { seed: 7 }, awaySlot: { seed: 2 },
       result: null
     },
 
-    G5: {
-      date: "Sat 5/9", time: "3:00 PM", location: "Britton",
-      homeSlot: { winnerOf: "G1" }, awaySlot: { winnerOf: "G2" },
-      result: null
-    },
+    // ── WINNERS BRACKET ROUND 2 ──────────────
     G6: {
       date: "Sat 5/9", time: "9:00 AM", location: "Britton",
-      homeSlot: { winnerOf: "G3" }, awaySlot: { winnerOf: "G4" },
-      result: null
-    },
-
-    G7: {
-      date: "Sat 5/9", time: "12:00 PM", location: "Central MP",
-      homeSlot: { loserOf: "G1" }, awaySlot: { loserOf: "G2" },
+      homeSlot: { winnerOf: "G1" }, awaySlot: { winnerOf: "G2" },
       result: null
     },
     G8: {
       date: "Sat 5/9", time: "12:00 PM", location: "Britton",
+      homeSlot: { winnerOf: "G3" }, awaySlot: { winnerOf: "G4" },
+      result: null
+    },
+
+    // ── WINNERS BRACKET FINAL ─────────────────
+    G11: {
+      date: "Wed 5/13", time: "5:15 PM", location: "Britton",
+      homeSlot: { winnerOf: "G8" }, awaySlot: { winnerOf: "G6" },
+      result: null
+    },
+
+    // ── ELIMINATION BRACKET ROUND 1 ──────────
+    G5: {
+      date: "Sat 5/9", time: "3:00 PM", location: "Britton",
+      homeSlot: { loserOf: "G1" }, awaySlot: { loserOf: "G2" },
+      result: null
+    },
+    G7: {
+      date: "Sat 5/9", time: "12:00 PM", location: "Central MP",
       homeSlot: { loserOf: "G3" }, awaySlot: { loserOf: "G4" },
       result: null
     },
 
+    // ── ELIMINATION BRACKET ROUND 2 ──────────
     G9: {
-      date: "Mon 5/11", time: "5:15 PM", location: "Britton",
-      homeSlot: { winnerOf: "G7" }, awaySlot: { loserOf: "G5" },
+      date: "Mon 5/11", time: "5:15 PM", location: "El Toro",
+      homeSlot: { winnerOf: "G7" }, awaySlot: { winnerOf: "G5" },
       result: null
     },
     G10: {
-      date: "Mon 5/11", time: "5:15 PM", location: "El Toro",
-      homeSlot: { winnerOf: "G8" }, awaySlot: { loserOf: "G6" },
+      date: "Mon 5/11", time: "5:15 PM", location: "Britton",
+      homeSlot: { loserOf: "G8" }, awaySlot: { loserOf: "G6" },
       result: null
     },
 
-    G11: {
-      date: "Wed 5/13", time: "5:15 PM", location: "Britton",
-      homeSlot: { winnerOf: "G5" }, awaySlot: { winnerOf: "G6" },
-      result: null
-    },
-
+    // ── ELIMINATION BRACKET SEMI ──────────────
     G12: {
       date: "Tue 5/12", time: "5:15 PM", location: "Britton",
-      homeSlot: { winnerOf: "G9" }, awaySlot: { winnerOf: "G10" },
+      homeSlot: { winnerOf: "G10" }, awaySlot: { winnerOf: "G9" },
       result: null
     },
 
+    // ── ELIMINATION BRACKET FINAL ─────────────
     G13: {
       date: "Thu 5/14", time: "5:15 PM", location: "Britton",
       homeSlot: { loserOf: "G11" }, awaySlot: { winnerOf: "G12" },
       result: null
     },
 
+    // ── CHAMPIONSHIP ─────────────────────────
     G14: {
       date: "Sat 5/16", time: "10:00 AM", location: "Britton",
       homeSlot: { winnerOf: "G11" }, awaySlot: { winnerOf: "G13" },
       result: null
     },
-
     G15: {
       date: "Sat 5/16", time: "TBD", location: "Britton",
       homeSlot: { loserOf: "G14" }, awaySlot: { winnerOf: "G14" },
