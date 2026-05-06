@@ -41,7 +41,24 @@ window.PLAYOFF_DATA = {
     G2: {
       date: "Tue 5/5", time: "5:15 PM", location: "Central MP",
       homeSlot: { seed: 5 }, awaySlot: { seed: 4 },
-      result: null
+      result: {
+        homeTeam: "Mets", homeSeed: 4,
+        awayTeam: "Phillies", awaySeed: 5,
+        homeScore: 15, awayScore: 6,
+        innings: {
+          home: [3, 0, 4, 4, 4, 0],
+          away: [0, 1, 0, 3, 0, 2]
+        },
+        pitchers: [
+          { name: "J. Rodriguez", team: "Mets",     pitches: 55, gameDate: "2026-05-05" },
+          { name: "K. Pacheco",   team: "Mets",     pitches: 23, gameDate: "2026-05-05" },
+          { name: "D. Hodge",     team: "Mets",     pitches: 18, gameDate: "2026-05-05" },
+          { name: "R. Kanney",    team: "Mets",     pitches: 26, gameDate: "2026-05-05" },
+          { name: "Lucas V",      team: "Phillies", pitches: 54, gameDate: "2026-05-05" },
+          { name: "Lucas C",      team: "Phillies", pitches: 20, gameDate: "2026-05-05" },
+          { name: "Jovan",        team: "Phillies", pitches: 38, gameDate: "2026-05-05" }
+        ]
+      }
     },
     G3: {
       date: "Wed 5/6", time: "5:15 PM", location: "Britton",
