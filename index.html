@@ -326,16 +326,18 @@
 
   .pitch-bar-wrap { display: flex; align-items: center; gap: 8px; }
   .pitch-count { font-size: 13px; font-weight: 700; min-width: 26px; }
-  .pitch-count.low    { color: #2a8a2a; }
-  .pitch-count.mid    { color: #c87000; }
-  .pitch-count.high   { color: #b83000; }
-  .pitch-count.limit  { color: #900; }
+  .pitch-count.rest0 { color: #2a8a2a; }
+  .pitch-count.rest1 { color: #7ab020; }
+  .pitch-count.rest2 { color: #c87000; }
+  .pitch-count.rest3 { color: #c04000; }
+  .pitch-count.rest4 { color: #960000; }
   .pitch-bar-bg { flex: 1; height: 6px; border-radius: 3px; background: #eee; min-width: 80px; }
   .pitch-bar-fill { height: 100%; border-radius: 3px; }
-  .pitch-bar-fill.low   { background: #2a8a2a; }
-  .pitch-bar-fill.mid   { background: #c87000; }
-  .pitch-bar-fill.high  { background: #b83000; }
-  .pitch-bar-fill.limit { background: #900; }
+  .pitch-bar-fill.rest0 { background: #2a8a2a; }
+  .pitch-bar-fill.rest1 { background: #7ab020; }
+  .pitch-bar-fill.rest2 { background: #c87000; }
+  .pitch-bar-fill.rest3 { background: #c04000; }
+  .pitch-bar-fill.rest4 { background: #960000; }
 
   .avail-badge {
     display: inline-block;
@@ -433,10 +435,11 @@ function resolveSlot(slot) {
 }
 
 function pitchClass(n) {
-  if (n <= 20) return "low";
-  if (n <= 40) return "mid";
-  if (n <= 60) return "high";
-  return "limit";
+  if (n <= 20) return "rest0";
+  if (n <= 35) return "rest1";
+  if (n <= 50) return "rest2";
+  if (n <= 65) return "rest3";
+  return "rest4";
 }
 
 function restRequired(pitches) {
