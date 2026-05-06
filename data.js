@@ -40,7 +40,7 @@ window.PLAYOFF_DATA = {
     },
     G2: {
       date: "Tue 5/5", time: "5:15 PM", location: "Central MP",
-      homeSlot: { seed: 5 }, awaySlot: { seed: 4 },
+      homeSlot: { seed: 4 }, awaySlot: { seed: 5 },
       result: {
         homeTeam: "Mets", homeSeed: 4,
         awayTeam: "Phillies", awaySeed: 5,
@@ -67,7 +67,7 @@ window.PLAYOFF_DATA = {
     },
     G4: {
       date: "Wed 5/6", time: "5:15 PM", location: "Central MP",
-      homeSlot: { seed: 7 }, awaySlot: { seed: 2 },
+      homeSlot: { seed: 2 }, awaySlot: { seed: 7 },
       result: null
     },
 
