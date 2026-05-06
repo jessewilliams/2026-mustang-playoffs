@@ -21,7 +21,22 @@ window.PLAYOFF_DATA = {
     G1: {
       date: "Tue 5/5", time: "5:15 PM", location: "Britton",
       homeSlot: { seed: 1 }, awaySlot: { seed: 8 },
-      result: null
+      result: {
+        homeTeam: "Reds", homeSeed: 1,
+        awayTeam: "Blue Jays", awaySeed: 8,
+        homeScore: 5, awayScore: 4,
+        innings: {
+          home: [4, 0, 0, 0, 0, 1],
+          away: [3, 0, 0, 1, 0, 0]
+        },
+        pitchers: [
+          { name: "Joey",   team: "Reds",      pitches: 36, gameDate: "2026-05-05" },
+          { name: "AJ",     team: "Reds",      pitches: 45, gameDate: "2026-05-05" },
+          { name: "Jake",   team: "Reds",      pitches: 8,  gameDate: "2026-05-05" },
+          { name: "Bryson", team: "Blue Jays", pitches: 65, gameDate: "2026-05-05" },
+          { name: "Joe",    team: "Blue Jays", pitches: 16, gameDate: "2026-05-05" }
+        ]
+      }
     },
     G2: {
       date: "Tue 5/5", time: "5:15 PM", location: "Central MP",

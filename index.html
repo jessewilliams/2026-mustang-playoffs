@@ -446,16 +446,64 @@ function restRequired(pitches) {
   return 3;
 }
 
+// Find the next scheduled game date for a team by scanning all games
+// that reference this team's current game result as a slot source
+function getNextGameDate(teamName) {
+  // Find which game this team most recently played
+  let teamGameId = null;
+  for (const [gid, g] of Object.entries(D.games)) {
+    if (g.result && (g.result.homeTeam === teamName || g.result.awayTeam === teamName)) {
+      teamGameId = gid;
+    }
+  }
+  if (!teamGameId) return null;
+
+  const teamResult = D.games[teamGameId].result;
+  const teamWon = teamResult.homeTeam === teamName
+    ? teamResult.homeScore > teamResult.awayScore
+    : teamResult.awayScore > teamResult.homeScore;
+
+  // Find the next game that draws from this game via winnerOf/loserOf
+  for (const [gid, g] of Object.entries(D.games)) {
+    if (g.result) continue; // already played, skip
+    const homeSrc = g.homeSlot;
+    const awaySrc = g.awaySlot;
+    const matchesSlot = (slot) => {
+      if (!slot) return false;
+      if (slot.winnerOf === teamGameId && teamWon)  return true;
+      if (slot.loserOf  === teamGameId && !teamWon) return true;
+      return false;
+    };
+    if (matchesSlot(homeSrc) || matchesSlot(awaySrc)) {
+      // Parse the game date — format is like "Sat 5/9" or "Mon 5/11"
+      const dateStr = g.date; // e.g. "Sat 5/9"
+      const parts = dateStr.match(/(\d+)\/(\d+)/);
+      if (parts) {
+        const month = parseInt(parts[1]) - 1;
+        const day   = parseInt(parts[2]);
+        const d = new Date(2026, month, day);
+        return d;
+      }
+    }
+  }
+  return null;
+}
+
 // Returns { available: bool, outUntil: "May 9" or null }
+// Availability is judged against the team's NEXT game date, not today
 function pitcherAvailability(pitcher) {
   const rest = restRequired(pitcher.pitches);
   if (rest === 0) return { available: true, outUntil: null };
-  const gameDate = new Date(pitcher.gameDate);
+
+  const gameDate = new Date(pitcher.gameDate + "T00:00:00");
   const eligDate = new Date(gameDate);
-  eligDate.setDate(eligDate.getDate() + rest + 1); // eligible AFTER rest days
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  if (eligDate <= today) return { available: true, outUntil: null };
+  eligDate.setDate(eligDate.getDate() + rest + 1); // first eligible date
+
+  // Use next game date if we can find it, otherwise fall back to today
+  const nextGame = getNextGameDate(pitcher.team);
+  const compareDate = nextGame || (() => { const t = new Date(); t.setHours(0,0,0,0); return t; })();
+
+  if (eligDate <= compareDate) return { available: true, outUntil: null };
   const label = eligDate.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   return { available: false, outUntil: label };
 }
