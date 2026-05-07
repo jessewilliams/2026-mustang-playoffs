@@ -63,12 +63,45 @@ window.PLAYOFF_DATA = {
     G3: {
       date: "Wed 5/6", time: "5:15 PM", location: "Britton",
       homeSlot: { seed: 3 }, awaySlot: { seed: 6 },
-      result: null
+      result: {
+        homeTeam: "Red Sox", homeSeed: 3,
+        awayTeam: "Giants", awaySeed: 6,
+        homeScore: 13, awayScore: 9,
+        innings: {
+          home: [4, 1, 4, 4, 0, 0],
+          away: [2, 0, 3, 0, 2, 2]
+        },
+        pitchers: [
+          { name: "Jon",     team: "Red Sox", pitches: 6,  gameDate: "2026-05-06" },
+          { name: "Kayson",  team: "Red Sox", pitches: 50, gameDate: "2026-05-06" },
+          { name: "Gavin",   team: "Red Sox", pitches: 34, gameDate: "2026-05-06" },
+          { name: "Kaleb",   team: "Red Sox", pitches: 49, gameDate: "2026-05-06" },
+          { name: "Brantly", team: "Red Sox", pitches: 6,  gameDate: "2026-05-06" }
+        ]
+      }
     },
     G4: {
       date: "Wed 5/6", time: "5:15 PM", location: "Central MP",
       homeSlot: { seed: 2 }, awaySlot: { seed: 7 },
-      result: null
+      result: {
+        homeTeam: "Brewers", homeSeed: 2,
+        awayTeam: "Pirates", awaySeed: 7,
+        homeScore: 15, awayScore: 5,
+        innings: {
+          home: [4, 2, 1, 4, 4, 0],
+          away: [0, 1, 0, 0, 3, 1]
+        },
+        pitchers: [
+          { name: "Casey Stevenson",  team: "Brewers", pitches: 47, gameDate: "2026-05-06" },
+          { name: "Weston Sereni",    team: "Brewers", pitches: 43, gameDate: "2026-05-06" },
+          { name: "Jesse Stevenson",  team: "Brewers", pitches: 5,  gameDate: "2026-05-06" },
+          { name: "Logan Holt",       team: "Brewers", pitches: 42, gameDate: "2026-05-06" },
+          { name: "Caden Cogliandro", team: "Pirates", pitches: 44, gameDate: "2026-05-06" },
+          { name: "Powell Hayes",     team: "Pirates", pitches: 15, gameDate: "2026-05-06" },
+          { name: "Jax Cogliandro",   team: "Pirates", pitches: 41, gameDate: "2026-05-06" },
+          { name: "Chase Bennetts",   team: "Pirates", pitches: 25, gameDate: "2026-05-06" }
+        ]
+      }
     },
 
     // ── WINNERS BRACKET ROUND 2 ──────────────
