@@ -76,7 +76,12 @@ window.PLAYOFF_DATA = {
           { name: "Kayson",  team: "Red Sox", pitches: 50, gameDate: "2026-05-06" },
           { name: "Gavin",   team: "Red Sox", pitches: 34, gameDate: "2026-05-06" },
           { name: "Kaleb",   team: "Red Sox", pitches: 49, gameDate: "2026-05-06" },
-          { name: "Brantly", team: "Red Sox", pitches: 6,  gameDate: "2026-05-06" }
+          { name: "Brantly", team: "Red Sox", pitches: 6,  gameDate: "2026-05-06" },
+          { name: "Angelo",  team: "Giants",  pitches: 11, gameDate: "2026-05-06" },
+          { name: "Lorenzo", team: "Giants",  pitches: 36, gameDate: "2026-05-06" },
+          { name: "Owen",    team: "Giants",  pitches: 36, gameDate: "2026-05-06" },
+          { name: "Chase",   team: "Giants",  pitches: 24, gameDate: "2026-05-06" },
+          { name: "Carson",  team: "Giants",  pitches: 11, gameDate: "2026-05-06" }
         ]
       }
     },
