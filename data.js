@@ -101,10 +101,10 @@ window.PLAYOFF_DATA = {
           { name: "Weston Sereni",    team: "Brewers", pitches: 43, gameDate: "2026-05-06" },
           { name: "Jesse Stevenson",  team: "Brewers", pitches: 5,  gameDate: "2026-05-06" },
           { name: "Logan Holt",       team: "Brewers", pitches: 42, gameDate: "2026-05-06" },
-          { name: "Caden Cogliandro", team: "Pirates", pitches: 44, gameDate: "2026-05-06" },
-          { name: "Powell Hayes",     team: "Pirates", pitches: 15, gameDate: "2026-05-06" },
-          { name: "Jax Cogliandro",   team: "Pirates", pitches: 41, gameDate: "2026-05-06" },
-          { name: "Chase Bennetts",   team: "Pirates", pitches: 25, gameDate: "2026-05-06" }
+          { name: "Caden",  team: "Pirates", pitches: 45, gameDate: "2026-05-06" },
+          { name: "Chase",  team: "Pirates", pitches: 23, gameDate: "2026-05-06" },
+          { name: "Jaxon",  team: "Pirates", pitches: 40, gameDate: "2026-05-06" },
+          { name: "Powell", team: "Pirates", pitches: 15, gameDate: "2026-05-06" }
         ]
       }
     },
@@ -113,12 +113,47 @@ window.PLAYOFF_DATA = {
     G6: {
       date: "Sat 5/9", time: "9:00 AM", location: "Britton",
       homeSlot: { winnerOf: "G1" }, awaySlot: { winnerOf: "G2" },
-      result: null
+      result: {
+        homeTeam: "Reds", homeSeed: 1,
+        awayTeam: "Mets", awaySeed: 4,
+        homeScore: 6, awayScore: 20,
+        innings: {
+          home: [1, 4, 1, 0, 0, 0],
+          away: [1, 4, 2, 4, 3, 6]
+        },
+        pitchers: [
+          { name: "J. Rodriguez", team: "Mets",  pitches: 48, gameDate: "2026-05-09" },
+          { name: "L. Delgado",   team: "Mets",  pitches: 5,  gameDate: "2026-05-09" },
+          { name: "W. Billman",   team: "Mets",  pitches: 24, gameDate: "2026-05-09" },
+          { name: "K. Pacheco",   team: "Mets",  pitches: 46, gameDate: "2026-05-09" },
+          { name: "R. Kanney",    team: "Mets",  pitches: 26, gameDate: "2026-05-09" },
+          { name: "Jake",         team: "Reds",  pitches: 50, gameDate: "2026-05-09" },
+          { name: "AJ",           team: "Reds",  pitches: 49, gameDate: "2026-05-09" },
+          { name: "Joey",         team: "Reds",  pitches: 46, gameDate: "2026-05-09" },
+          { name: "Cameron",      team: "Reds",  pitches: 35, gameDate: "2026-05-09" },
+          { name: "Cruz",         team: "Reds",  pitches: 31, gameDate: "2026-05-09" }
+        ]
+      }
     },
     G8: {
       date: "Sat 5/9", time: "12:00 PM", location: "Britton",
       homeSlot: { winnerOf: "G3" }, awaySlot: { winnerOf: "G4" },
-      result: null
+      result: {
+        homeTeam: "Red Sox", homeSeed: 3,
+        awayTeam: "Brewers", awaySeed: 2,
+        homeScore: 6, awayScore: 7,
+        innings: {
+          home: [0, 2, 0, 0, 2, 2],
+          away: [0, 1, 4, 0, 2, 0]
+        },
+        pitchers: [
+          { name: "Casey Stevenson", team: "Brewers",  pitches: 46, gameDate: "2026-05-09" },
+          { name: "Weston Sereni",   team: "Brewers",  pitches: 57, gameDate: "2026-05-09" },
+          { name: "Kayson",          team: "Red Sox",  pitches: 51, gameDate: "2026-05-09" },
+          { name: "Jon Brassfield",  team: "Red Sox",  pitches: 18, gameDate: "2026-05-09" },
+          { name: "Gavin Leimas",    team: "Red Sox",  pitches: 29, gameDate: "2026-05-09" }
+        ]
+      }
     },
 
     // ── WINNERS FINAL ─────────────────────────
@@ -131,13 +166,44 @@ window.PLAYOFF_DATA = {
     // ── ELIMINATION BRACKET ROUND 1 ──────────
     G5: {
       date: "Sat 5/9", time: "3:00 PM", location: "Britton",
-      homeSlot: { loserOf: "G1" }, awaySlot: { loserOf: "G2" },
-      result: null
+      homeSlot: { loserOf: "G2" }, awaySlot: { loserOf: "G1" },
+      result: {
+        homeTeam: "Phillies", homeSeed: 5,
+        awayTeam: "Blue Jays", awaySeed: 8,
+        homeScore: 18, awayScore: 13,
+        innings: {
+          home: [4, 1, 4, 4, 5, 0],
+          away: [3, 4, 0, 0, 1, 5]
+        },
+        pitchers: [
+          { name: "Andrew",  team: "Phillies",  pitches: 71, gameDate: "2026-05-09" },
+          { name: "Lucas V", team: "Phillies",  pitches: 31, gameDate: "2026-05-09" },
+          { name: "Lino",    team: "Phillies",  pitches: 34, gameDate: "2026-05-09" },
+          { name: "Joey",    team: "Blue Jays", pitches: 37, gameDate: "2026-05-09" },
+          { name: "Joe",     team: "Blue Jays", pitches: 46, gameDate: "2026-05-09" },
+          { name: "Bryson",  team: "Blue Jays", pitches: 40, gameDate: "2026-05-09" }
+        ]
+      }
     },
     G7: {
       date: "Sat 5/9", time: "12:00 PM", location: "Central MP",
       homeSlot: { loserOf: "G3" }, awaySlot: { loserOf: "G4" },
-      result: null
+      result: {
+        homeTeam: "Giants", homeSeed: 6,
+        awayTeam: "Pirates", awaySeed: 7,
+        homeScore: 12, awayScore: 15,
+        innings: {
+          home: [4, 1, 4, 2, 1, 0],
+          away: [1, 0, 3, 4, 3, 4]
+        },
+        pitchers: [
+          { name: "Caden",  team: "Pirates", pitches: 26, gameDate: "2026-05-09" },
+          { name: "Chase",  team: "Pirates", pitches: 35, gameDate: "2026-05-09" },
+          { name: "Jaxon",  team: "Pirates", pitches: 28, gameDate: "2026-05-09" },
+          { name: "Marco",  team: "Pirates", pitches: 27, gameDate: "2026-05-09" },
+          { name: "Powell", team: "Pirates", pitches: 9,  gameDate: "2026-05-09" }
+        ]
+      }
     },
 
     // ── ELIMINATION BRACKET ROUND 2 ──────────
