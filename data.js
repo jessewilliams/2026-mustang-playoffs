@@ -197,11 +197,16 @@ window.PLAYOFF_DATA = {
           away: [1, 0, 3, 4, 3, 4]
         },
         pitchers: [
-          { name: "Caden",  team: "Pirates", pitches: 26, gameDate: "2026-05-09" },
-          { name: "Chase",  team: "Pirates", pitches: 35, gameDate: "2026-05-09" },
-          { name: "Jaxon",  team: "Pirates", pitches: 28, gameDate: "2026-05-09" },
-          { name: "Marco",  team: "Pirates", pitches: 27, gameDate: "2026-05-09" },
-          { name: "Powell", team: "Pirates", pitches: 9,  gameDate: "2026-05-09" }
+          { name: "Caden",   team: "Pirates", pitches: 26, gameDate: "2026-05-09" },
+          { name: "Chase",   team: "Pirates", pitches: 35, gameDate: "2026-05-09" },
+          { name: "Jaxon",   team: "Pirates", pitches: 28, gameDate: "2026-05-09" },
+          { name: "Marco",   team: "Pirates", pitches: 27, gameDate: "2026-05-09" },
+          { name: "Powell",  team: "Pirates", pitches: 9,  gameDate: "2026-05-09" },
+          { name: "Lorenzo", team: "Giants",  pitches: 11, gameDate: "2026-05-09" },
+          { name: "Oliver",  team: "Giants",  pitches: 35, gameDate: "2026-05-09" },
+          { name: "Carson",  team: "Giants",  pitches: 35, gameDate: "2026-05-09" },
+          { name: "Chase",   team: "Giants",  pitches: 29, gameDate: "2026-05-09" },
+          { name: "Owen",    team: "Giants",  pitches: 16, gameDate: "2026-05-09" }
         ]
       }
     },
