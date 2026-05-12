@@ -214,13 +214,42 @@ window.PLAYOFF_DATA = {
     // ── ELIMINATION BRACKET ROUND 2 ──────────
     G9: {
       date: "Mon 5/11", time: "5:15 PM", location: "El Toro",
-      homeSlot: { loserOf: "G6" }, awaySlot: { winnerOf: "G7" },
-      result: null
+      homeSlot: { winnerOf: "G7" }, awaySlot: { loserOf: "G6" },
+      result: {
+        homeTeam: "Pirates", homeSeed: 7,
+        awayTeam: "Reds", awaySeed: 1,
+        homeScore: 21, awayScore: 7,
+        innings: {
+          home: [3, 1, 4, 4, 9, 0],
+          away: [2, 0, 0, 0, 5, 0]
+        },
+        pitchers: [
+          { name: "Caden",  team: "Pirates", pitches: 34, gameDate: "2026-05-11" },
+          { name: "Chase",  team: "Pirates", pitches: 20, gameDate: "2026-05-11" },
+          { name: "Jaxon",  team: "Pirates", pitches: 35, gameDate: "2026-05-11" },
+          { name: "Powell", team: "Pirates", pitches: 33, gameDate: "2026-05-11" }
+        ]
+      }
     },
     G10: {
       date: "Mon 5/11", time: "5:15 PM", location: "Britton",
-      homeSlot: { loserOf: "G8" }, awaySlot: { winnerOf: "G5" },
-      result: null
+      homeSlot: { winnerOf: "G5" }, awaySlot: { loserOf: "G8" },
+      result: {
+        homeTeam: "Phillies", homeSeed: 5,
+        awayTeam: "Red Sox", awaySeed: 3,
+        homeScore: 4, awayScore: 16,
+        innings: {
+          home: [1, 1, 2, 0, 0, 0],
+          away: [4, 3, 0, 1, 4, 4]
+        },
+        pitchers: [
+          { name: "Jon",       team: "Red Sox", pitches: 32, gameDate: "2026-05-11" },
+          { name: "Gavin",     team: "Red Sox", pitches: 34, gameDate: "2026-05-11" },
+          { name: "Nathaniel", team: "Red Sox", pitches: 5,  gameDate: "2026-05-11" },
+          { name: "Kaleb",     team: "Red Sox", pitches: 33, gameDate: "2026-05-11" },
+          { name: "Brantley",  team: "Red Sox", pitches: 5,  gameDate: "2026-05-11" }
+        ]
+      }
     },
 
     // ── ELIMINATION SEMI ──────────────────────
