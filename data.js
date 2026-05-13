@@ -169,13 +169,12 @@ window.PLAYOFF_DATA = {
           away: [2, 0, 0, 1, 0, 0]
         },
         pitchers: [
-          { name: "Casey Stevenson", team: "Brewers", pitches: 62, gameDate: "2026-05-12" },
+          { name: "Casey Stevenson", team: "Brewers", pitches: 63, gameDate: "2026-05-12" },
           { name: "Jesse Stevenson", team: "Brewers", pitches: 34, gameDate: "2026-05-12" },
-          { name: "Kai P",           team: "Mets",    pitches: 42, gameDate: "2026-05-12" },
-          { name: "Jayce R",         team: "Mets",    pitches: 39, gameDate: "2026-05-12" },
-          { name: "Riley K",         team: "Mets",    pitches: 25, gameDate: "2026-05-12" },
-          { name: "Wyatt Billman",   team: "Mets",    pitches: 9,  gameDate: "2026-05-12" },
-          { name: "Don Hodge",       team: "Mets",    pitches: 8,  gameDate: "2026-05-12" }
+          { name: "J. Rodriguez",    team: "Mets",    pitches: 39, gameDate: "2026-05-12" },
+          { name: "W. Billman",      team: "Mets",    pitches: 8,  gameDate: "2026-05-12" },
+          { name: "K. Pacheco",      team: "Mets",    pitches: 50, gameDate: "2026-05-12" },
+          { name: "R. Kanney",       team: "Mets",    pitches: 25, gameDate: "2026-05-12" }
         ]
       }
     },
