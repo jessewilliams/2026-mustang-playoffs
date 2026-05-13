@@ -349,6 +349,7 @@
   }
   .avail-badge.available  { background: #e6f9e6; color: #1a6a1a; border: 1px solid #9dd49d; }
   .avail-badge.out        { background: #fdecea; color: #a00; border: 1px solid #f5b0aa; }
+  .avail-badge.na         { background: #f0f0f0; color: #999; border: 1px solid #ddd; }
 
   .no-result-msg { text-align: center; padding: 32px; color: #aaa; font-size: 14px; font-style: italic; }
 
@@ -451,49 +452,58 @@ function restRequired(pitches) {
 
 // Find the next scheduled game date for a team by scanning all games
 // that reference this team's current game result as a slot source
-function getNextGameDate(teamName) {
-  // Find which game this team most recently played
-  let teamGameId = null;
+function parseGameDate(dateStr) {
+  // Parse "Sat 5/9", "Mon 5/11" etc into a Date object
+  const parts = dateStr.match(/(\d+)\/(\d+)/);
+  if (!parts) return null;
+  return new Date(2026, parseInt(parts[1]) - 1, parseInt(parts[2]));
+}
+
+function findGameIdForPitcher(pitcher) {
+  // Find the specific game this pitcher appeared in based on team + gameDate
   for (const [gid, g] of Object.entries(D.games)) {
-    if (g.result && (g.result.homeTeam === teamName || g.result.awayTeam === teamName)) {
-      teamGameId = gid;
-    }
+    if (!g.result) continue;
+    const r = g.result;
+    if (r.homeTeam !== pitcher.team && r.awayTeam !== pitcher.team) continue;
+    // Match by gameDate
+    const gDate = parseGameDate(g.date);
+    const pDate = new Date(pitcher.gameDate + "T00:00:00");
+    if (gDate && gDate.getTime() === pDate.getTime()) return gid;
   }
-  if (!teamGameId) return null;
+  return null;
+}
 
-  const teamResult = D.games[teamGameId].result;
-  const teamWon = teamResult.homeTeam === teamName
-    ? teamResult.homeScore > teamResult.awayScore
-    : teamResult.awayScore > teamResult.homeScore;
+function getNextGameDate(teamName, sourceGameId) {
+  // Given the specific game a pitcher threw in, find what game that team
+  // played next — whether that next game has been played or not.
+  if (!sourceGameId) return null;
 
-  // Find the next game that draws from this game via winnerOf/loserOf
+  const sourceGame = D.games[sourceGameId];
+  if (!sourceGame || !sourceGame.result) return null;
+
+  const r = sourceGame.result;
+  const teamWon = r.homeTeam === teamName
+    ? r.homeScore > r.awayScore
+    : r.awayScore > r.homeScore;
+
+  // Find the game whose slot references sourceGameId for this team
   for (const [gid, g] of Object.entries(D.games)) {
-    if (g.result) continue; // already played, skip
-    const homeSrc = g.homeSlot;
-    const awaySrc = g.awaySlot;
     const matchesSlot = (slot) => {
       if (!slot) return false;
-      if (slot.winnerOf === teamGameId && teamWon)  return true;
-      if (slot.loserOf  === teamGameId && !teamWon) return true;
+      if (slot.winnerOf === sourceGameId && teamWon)  return true;
+      if (slot.loserOf  === sourceGameId && !teamWon) return true;
       return false;
     };
-    if (matchesSlot(homeSrc) || matchesSlot(awaySrc)) {
-      // Parse the game date — format is like "Sat 5/9" or "Mon 5/11"
-      const dateStr = g.date; // e.g. "Sat 5/9"
-      const parts = dateStr.match(/(\d+)\/(\d+)/);
-      if (parts) {
-        const month = parseInt(parts[1]) - 1;
-        const day   = parseInt(parts[2]);
-        const d = new Date(2026, month, day);
-        return d;
-      }
+    if (matchesSlot(g.homeSlot) || matchesSlot(g.awaySlot)) {
+      return parseGameDate(g.date);
     }
   }
   return null;
 }
 
 // Returns { available: bool, outUntil: "May 9" or null }
-// Availability is judged against the team's NEXT game date, not today
+// Availability is judged against the team's next scheduled game after
+// the specific game the pitcher appeared in.
 function pitcherAvailability(pitcher) {
   const rest = restRequired(pitcher.pitches);
   if (rest === 0) return { available: true, outUntil: null };
@@ -502,11 +512,14 @@ function pitcherAvailability(pitcher) {
   const eligDate = new Date(gameDate);
   eligDate.setDate(eligDate.getDate() + rest + 1); // first eligible date
 
-  // Use next game date if we can find it, otherwise fall back to today
-  const nextGame = getNextGameDate(pitcher.team);
-  const compareDate = nextGame || (() => { const t = new Date(); t.setHours(0,0,0,0); return t; })();
+  // Find the specific game this pitcher appeared in, then get the next game date
+  const sourceGameId = findGameIdForPitcher(pitcher);
+  const nextGameDate = getNextGameDate(pitcher.team, sourceGameId);
 
-  if (eligDate <= compareDate) return { available: true, outUntil: null };
+  // If no next game found (team eliminated), show N/A
+  if (!nextGameDate) return { available: null, outUntil: null };
+
+  if (eligDate <= nextGameDate) return { available: true, outUntil: null };
   const label = eligDate.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   return { available: false, outUntil: label };
 }
@@ -819,8 +832,8 @@ function buildModalContent(r, homeWon, designatedHome) {
       const cls = pitchClass(p.pitches);
       const pct = Math.min(100, Math.round((p.pitches / 85) * 100));
       const avail = pitcherAvailability(p);
-      const badgeClass = avail.available ? "available" : "out";
-      const badgeText  = avail.available ? "available" : `out until ${avail.outUntil}`;
+      const badgeClass = avail.available === null ? "na" : avail.available ? "available" : "out";
+      const badgeText  = avail.available === null ? "N/A" : avail.available ? "available" : `out until ${avail.outUntil}`;
       html += `<tr>
         <td><span class="team-pill">${p.team}</span>${p.name}</td>
         <td class="right">

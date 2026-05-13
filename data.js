@@ -159,8 +159,25 @@ window.PLAYOFF_DATA = {
     // ── WINNERS FINAL ─────────────────────────
     G12: {
       date: "Tue 5/12", time: "5:15 PM", location: "Britton",
-      homeSlot: { winnerOf: "G6" }, awaySlot: { winnerOf: "G8" },
-      result: null
+      homeSlot: { winnerOf: "G8" }, awaySlot: { winnerOf: "G6" },
+      result: {
+        homeTeam: "Brewers", homeSeed: 2,
+        awayTeam: "Mets", awaySeed: 4,
+        homeScore: 12, awayScore: 3,
+        innings: {
+          home: [2, 1, 3, 4, 2, 0],
+          away: [2, 0, 0, 1, 0, 0]
+        },
+        pitchers: [
+          { name: "Casey Stevenson", team: "Brewers", pitches: 62, gameDate: "2026-05-12" },
+          { name: "Jesse Stevenson", team: "Brewers", pitches: 34, gameDate: "2026-05-12" },
+          { name: "Kai P",           team: "Mets",    pitches: 42, gameDate: "2026-05-12" },
+          { name: "Jayce R",         team: "Mets",    pitches: 39, gameDate: "2026-05-12" },
+          { name: "Riley K",         team: "Mets",    pitches: 25, gameDate: "2026-05-12" },
+          { name: "Wyatt Billman",   team: "Mets",    pitches: 9,  gameDate: "2026-05-12" },
+          { name: "Don Hodge",       team: "Mets",    pitches: 8,  gameDate: "2026-05-12" }
+        ]
+      }
     },
 
     // ── ELIMINATION BRACKET ROUND 1 ──────────
@@ -224,10 +241,13 @@ window.PLAYOFF_DATA = {
           away: [2, 0, 0, 0, 5, 0]
         },
         pitchers: [
-          { name: "Caden",  team: "Pirates", pitches: 34, gameDate: "2026-05-11" },
-          { name: "Chase",  team: "Pirates", pitches: 20, gameDate: "2026-05-11" },
-          { name: "Jaxon",  team: "Pirates", pitches: 35, gameDate: "2026-05-11" },
-          { name: "Powell", team: "Pirates", pitches: 33, gameDate: "2026-05-11" }
+          { name: "Caden",   team: "Pirates", pitches: 34, gameDate: "2026-05-11" },
+          { name: "Chase",   team: "Pirates", pitches: 20, gameDate: "2026-05-11" },
+          { name: "Jaxon",   team: "Pirates", pitches: 35, gameDate: "2026-05-11" },
+          { name: "Powell",  team: "Pirates", pitches: 33, gameDate: "2026-05-11" },
+          { name: "Cameron", team: "Reds",    pitches: 52, gameDate: "2026-05-11" },
+          { name: "Cruz",    team: "Reds",    pitches: 64, gameDate: "2026-05-11" },
+          { name: "James",   team: "Reds",    pitches: 22, gameDate: "2026-05-11" }
         ]
       }
     },
@@ -237,17 +257,22 @@ window.PLAYOFF_DATA = {
       result: {
         homeTeam: "Phillies", homeSeed: 5,
         awayTeam: "Red Sox", awaySeed: 3,
-        homeScore: 4, awayScore: 16,
+        homeScore: 6, awayScore: 16,
         innings: {
-          home: [1, 1, 2, 0, 0, 0],
+          home: [1, 1, 2, 0, 0, 2],
           away: [4, 3, 0, 1, 4, 4]
         },
         pitchers: [
-          { name: "Jon",       team: "Red Sox", pitches: 32, gameDate: "2026-05-11" },
-          { name: "Gavin",     team: "Red Sox", pitches: 34, gameDate: "2026-05-11" },
-          { name: "Nathaniel", team: "Red Sox", pitches: 5,  gameDate: "2026-05-11" },
-          { name: "Kaleb",     team: "Red Sox", pitches: 33, gameDate: "2026-05-11" },
-          { name: "Brantley",  team: "Red Sox", pitches: 5,  gameDate: "2026-05-11" }
+          { name: "Jon",       team: "Red Sox",  pitches: 32, gameDate: "2026-05-11" },
+          { name: "Gavin",     team: "Red Sox",  pitches: 34, gameDate: "2026-05-11" },
+          { name: "Nathaniel", team: "Red Sox",  pitches: 5,  gameDate: "2026-05-11" },
+          { name: "Kaleb",     team: "Red Sox",  pitches: 33, gameDate: "2026-05-11" },
+          { name: "Brantley",  team: "Red Sox",  pitches: 5,  gameDate: "2026-05-11" },
+          { name: "Lucas C",   team: "Phillies", pitches: 47, gameDate: "2026-05-11" },
+          { name: "Lucas V",   team: "Phillies", pitches: 35, gameDate: "2026-05-11" },
+          { name: "Jovan",     team: "Phillies", pitches: 32, gameDate: "2026-05-11" },
+          { name: "Benjamin",  team: "Phillies", pitches: 25, gameDate: "2026-05-11" },
+          { name: "Lino",      team: "Phillies", pitches: 27, gameDate: "2026-05-11" }
         ]
       }
     },
