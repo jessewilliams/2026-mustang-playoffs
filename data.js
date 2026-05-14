@@ -280,7 +280,26 @@ window.PLAYOFF_DATA = {
     G11: {
       date: "Wed 5/13", time: "5:15 PM", location: "Britton",
       homeSlot: { winnerOf: "G10" }, awaySlot: { winnerOf: "G9" },
-      result: null
+      result: {
+        homeTeam: "Red Sox", homeSeed: 3,
+        awayTeam: "Pirates", awaySeed: 7,
+        homeScore: 14, awayScore: 13,
+        innings: {
+          home: [3, 1, 3, 0, 4, 3],
+          away: [4, 4, 1, 0, 3, 1]
+        },
+        pitchers: [
+          { name: "Jon",    team: "Red Sox", pitches: 19, gameDate: "2026-05-13" },
+          { name: "Kayson", team: "Red Sox", pitches: 20, gameDate: "2026-05-13" },
+          { name: "Kaleb",  team: "Red Sox", pitches: 67, gameDate: "2026-05-13" },
+          { name: "Russell",team: "Red Sox", pitches: 44, gameDate: "2026-05-13" },
+          { name: "Caden",  team: "Pirates", pitches: 19, gameDate: "2026-05-13" },
+          { name: "Chase",  team: "Pirates", pitches: 30, gameDate: "2026-05-13" },
+          { name: "Jaxon",  team: "Pirates", pitches: 18, gameDate: "2026-05-13" },
+          { name: "Marco",  team: "Pirates", pitches: 50, gameDate: "2026-05-13" },
+          { name: "Powell", team: "Pirates", pitches: 13, gameDate: "2026-05-13" }
+        ]
+      }
     },
 
     // ── ELIMINATION FINAL ─────────────────────
