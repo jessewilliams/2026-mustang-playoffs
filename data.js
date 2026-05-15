@@ -306,7 +306,24 @@ window.PLAYOFF_DATA = {
     G13: {
       date: "Thu 5/14", time: "5:15 PM", location: "Britton",
       homeSlot: { loserOf: "G12" }, awaySlot: { winnerOf: "G11" },
-      result: null
+      result: {
+        homeTeam: "Mets", homeSeed: 4,
+        awayTeam: "Red Sox", awaySeed: 3,
+        homeScore: 12, awayScore: 6,
+        innings: {
+          home: [4, 4, 0, 4, 0, 0],
+          away: [0, 1, 0, 4, 1, 0]
+        },
+        pitchers: [
+          { name: "Jayce R",  team: "Mets",    pitches: 37, gameDate: "2026-05-14" },
+          { name: "Julian V", team: "Mets",    pitches: 21, gameDate: "2026-05-14" },
+          { name: "Riley K",  team: "Mets",    pitches: 40, gameDate: "2026-05-14" },
+          { name: "Dylan",    team: "Red Sox", pitches: 41, gameDate: "2026-05-14" },
+          { name: "Gavin",    team: "Red Sox", pitches: 36, gameDate: "2026-05-14" },
+          { name: "Jon",      team: "Red Sox", pitches: 77, gameDate: "2026-05-14" },
+          { name: "Kayson",   team: "Red Sox", pitches: 16, gameDate: "2026-05-14" }
+        ]
+      }
     },
 
     // ── CHAMPIONSHIP ─────────────────────────
